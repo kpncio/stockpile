@@ -1,15 +1,21 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npx wrangler dev src/index.js` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npx wrangler publish src/index.js --name my-worker` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+// Expects: URI encoded username and password headers (X-KPNC-AUTH-USER and X-KPNC-AUTH-PASS) and requested data:
+// https://app.kpnc.io/trader/retriever/quotes/AAPL
 
-export default {
-	async fetch(request) {
-		return new Response("Hello World!");
-	},
-};
+async function handleRequest(request, epoch) {
+	const user = decodeURIComponent(request.headers.get('X-KPNC-AUTH-USER'));
+	const pass = decodeURIComponent(request.headers.get('X-KPNC-AUTH-PASS'));
+
+	if (user == null || pass == null) {
+		return new Response('Missing authentication...', {
+			headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 403 },
+		})
+	}
+
+
+}
+
+addEventListener('fetch', event => {
+	let epoch = Date.now();
+
+	event.respondWith(handleRequest(event.request, epoch))
+})

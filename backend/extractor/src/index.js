@@ -11,7 +11,7 @@ async function handleScheduled(request, epoch) {
 		})
 	}
 
-	if (time < 565 || time > 965) {
+	if (time < 565 || time > 995) {
 		return new Response('[NASDAQ Open] 9:30 AM - 4:00 PM EST...', {
 			headers: { 'content-type': 'text/plain', 'status' : 200 }
 		})
@@ -52,7 +52,7 @@ async function handleScheduled(request, epoch) {
 	let quotes = {};
 
 	const iexOne = await fetch(
-		`https://sandbox.iexapis.com/stable/stock/market/batch?token=Tsk_6338354694ab47aaa558c7f3cb5f22b0&symbols=${one.join()}&types=quote`, {
+		`https://cloud.iexapis.com/stable/stock/market/batch?token=${IEX_API_KEY}&symbols=${one.join()}&types=quote`, {
 			headers: {
 				'accept': 'application/json;charset=UTF-8',
 				'content-type': 'application/json;charset=UTF-8'
