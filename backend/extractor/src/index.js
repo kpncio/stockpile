@@ -1,7 +1,7 @@
 // Expects: Cron */30 * * * *:
 // https://app.kpnc.io/trader/extractor/
 
-async function handleRequest(request, epoch) {
+async function handleScheduled(request, epoch) {
 	let date = new Date(epoch);
 	let time = (date.getHours() * 60) + date.getMinutes();
 
@@ -135,5 +135,5 @@ async function handleRequest(request, epoch) {
 addEventListener('scheduled', event => {
 	let epoch = Date.now() - 14400000;
 
-	event.respondWith(handleRequest(event.request, epoch))
+	event.waitUntil(handleScheduled(event, epoch));
 })
