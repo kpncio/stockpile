@@ -1,0 +1,37 @@
+/*Colors*/
+$darkener:  rgba(0,0,0,0.5);
+$black:     rgb(0,0,0);
+$dark:      rgb(30,30,30);
+$mid:       rgb(107,107,107);
+$light:     rgb(225,225,225);
+$white:     rgb(255,255,255);
+$blue:      rgb(20,115,252);
+
+/*Styles*/
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    color: $white;
+    max-width: 100%;
+    font-size: 18px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    background-color: $black;
+    font-family: 'Inter Var', 'Roboto', 'Arial', sans-serif;
+    background: linear-gradient(165deg, rgba(20,252,195,1) 0%, rgba(136,20,252,1) 100%);
+}
+
+.container {
+    width: 85%;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.unsel {
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
