@@ -2,6 +2,10 @@ name = "retriever"
 main = "src/index.js"
 compatibility_date = "2022-07-21"
 
+[[services]]
+  binding = "AUTH"
+  service = "authenticator"
+
 [[kv_namespaces]]
   binding = "kv_symbols"
   id = "9294e00ff81a4d29bd601db2ae6a213b"

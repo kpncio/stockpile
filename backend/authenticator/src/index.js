@@ -3,11 +3,13 @@
 // curl -i -H "X-KPNC-AUTH-USER: " -H "X-KPNC-AUTH-PASS: " https://app.kpnc.io/trader/authenticator/
 
 async function handleRequest(request, epoch) {
+	let create = new URL(request.url).pathname.substring(1) === 'create' ? true : false;
+
 	const user = decodeURIComponent(request.headers.get('X-KPNC-AUTH-USER')).toLowerCase();
 	const pass = decodeURIComponent(request.headers.get('X-KPNC-AUTH-PASS'));
 
 	if (user == null || pass == null) {
-		return new Response(`{"status":400,"message":"Missing input...","verified":false}`, {
+		return new Response(`{"status":400,"message":"Missing input...","verified":false}\n`, {
 			headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 400 },
 		})
 	}
@@ -18,15 +20,15 @@ async function handleRequest(request, epoch) {
 		const hash = await hasher(data.salt + pass);
 
 		if (hash === data.hash) {
-			return new Response(`{"status":200,"message":"Authenticated...","verified":true}`, {
+			return new Response(`{"status":200,"message":"Authenticated...","verified":true}\n`, {
 				headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 200 },
 			})
 		} else {
-			return new Response(`{"status":403,"message":"Incorrect credentials...","verified":false}`, {
+			return new Response(`{"status":403,"message":"Incorrect credentials...","verified":false}\n`, {
 				headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 403 },
 			})
 		}
-	} else {
+	} else if (create == true) {
 		const url = await fetch(
 			`https://csprng.xyz/v1/api`, {
 				headers: {
@@ -44,8 +46,12 @@ async function handleRequest(request, epoch) {
 
 		await kv_users.put(user, JSON.stringify(value));
 
-		return new Response(`{"status":200,"message":"Created credentials...","verified":true}`, {
+		return new Response(`{"status":200,"message":"Created credentials...","verified":true}\n`, {
 			headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 200 },
+		})
+	} else {
+		return new Response(`{"status":403,"message":"Incorrect credentials...","verified":false}\n`, {
+			headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 403 },
 		})
 	}
 }
