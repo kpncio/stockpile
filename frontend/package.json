@@ -1,5 +1,5 @@
 {
-  "name": "trader",
+  "name": "frontend",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -19,7 +19,10 @@
     "@angular/platform-browser-dynamic": "^14.1.0",
     "@angular/router": "^14.1.0",
     "@types/jquery": "^3.5.14",
+    "chart.js": "^3.8.2",
     "jquery": "^3.6.0",
+    "ng-resize-observer": "^1.0.2",
+    "ng2-charts": "^4.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

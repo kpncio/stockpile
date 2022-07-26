@@ -1,0 +1,128 @@
+@import '../../../colors.scss';
+
+:host {
+  display: block;
+}
+
+/*Header*/
+.full {
+  height: 50px;
+  letter-spacing: 1px;
+  background-color: $dark;
+
+  a {
+    color: $white;
+    text-decoration: none;
+    transform: translateY(13px);
+  }
+
+  a.logo {
+    font-size: 20px;
+    font-weight: bold;
+
+    img {
+      height: 33px;
+      transition: 200ms;
+      filter: grayscale(1);
+      transform: translateY(9px);
+
+      &:hover {
+        filter: grayscale(0);
+      }
+    }
+  }
+
+  nav {
+    float: right;
+    display: block;
+
+    ul {
+      margin: 0;
+      display: flex;
+      list-style-type: none;
+
+      li a {
+        display: flex;
+        margin: 0 0.8em;
+        transition: 200ms;
+
+        &:hover {
+          border-bottom: 5px solid $blue;
+        }
+      }
+    }
+  }
+}
+
+.lite {
+  letter-spacing: 2px;
+  padding-bottom: 15px;
+  background-color: $dark;
+
+  a {
+    color: $white;
+    text-decoration: none;
+  }
+
+  a.logo {
+    font-size: 20px;
+    font-weight: bold;
+
+    img {
+      height: 33px;
+      transition: 200ms;
+      filter: grayscale(1);
+      transform: translateY(9px);
+
+      &:hover {
+        filter: grayscale(0);
+      }
+    }
+  }
+
+  button {
+    float: right;
+    border: none;
+    color: rgba(0,0,0,0);
+    transform: translateY(12px);
+    background-color: rgba(0,0,0,0);
+
+    img {
+      height: 24px;
+      color: $white;
+      font-size: 24px;
+      padding: 0.2em;
+      margin: -0.2em;
+      transition: 200ms;
+      border-radius: 5px;
+      border: 1px solid $white;
+    }
+  }
+
+  nav {
+    ul {
+      display: block;
+      text-align: center;
+      list-style-type: none;
+
+      li {
+        margin: 1em;
+
+        a {
+          transition: 200ms;
+          border-bottom: 0px solid $dark;
+
+          &:hover {
+            border-bottom: 5px solid $blue;
+          }
+        }
+      }
+
+      #first {
+        margin-top: 1em;
+        padding-top: 1em;
+        border-top: 1px solid $white;
+      }
+    }
+  }
+}

@@ -6,7 +6,12 @@ async function handleRequest(request) {
 
 	if (path == ['']) {
 		return new Response('Missing request...\n', {
-			headers: { 'content-type': 'text/plain', 'status' : 403 },
+			headers: {
+				'Access-Control-Allow-Headers': '*',
+				'Access-Control-Allow-Origin': '*',
+				'content-type': 'text/plain',
+				'status' : 403
+			},
 		})
 	}
 
@@ -15,7 +20,12 @@ async function handleRequest(request) {
 
 	if (user == null || pass == null) {
 		return new Response('Missing authentication...\n', {
-			headers: { 'content-type': 'text/plain', 'status' : 403 },
+			headers: {
+				'Access-Control-Allow-Headers': '*',
+				'Access-Control-Allow-Origin': '*',
+				'content-type': 'text/plain',
+				'status' : 403
+			},
 		})
 	}
 
@@ -23,29 +33,54 @@ async function handleRequest(request) {
 
 	if (data.status !== 200) {
 		return new Response('Incorrect credentials...\n', {
-			headers: { 'content-type': 'text/plain', 'status' : 403 },
+			headers: {
+				'Access-Control-Allow-Headers': '*',
+				'Access-Control-Allow-Origin': '*',
+				'content-type': 'text/plain',
+				'status' : 403
+			},
 		})
 	}
 
 	switch(path[0]) {
 		case 'quotes':
 			return new Response(`{"data":[${await kv_quotes.get(path[1])}]}\n`, {
-				headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 200 },
+				headers: {
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*',
+					'content-type': 'text/plain',
+					'status' : 200
+				},
 			})
 
 		case 'symbols':
 			return new Response(await kv_symbols.get('current') + '\n', {
-				headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 200 },
+				headers: {
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*',
+					'content-type': 'text/plain',
+					'status' : 200
+				},
 			})
 
 		case 'names':
 			return new Response(await kv_names.get('current') + '\n', {
-				headers: { 'content-type': 'application/json;charset=UTF-8', 'status' : 200 },
+				headers: {
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*',
+					'content-type': 'text/plain',
+					'status' : 200
+				},
 			})
 
 		default:
 			return new Response('Malformed request...\n', {
-				headers: { 'content-type': 'text/plain', 'status' : 400 },
+				headers: {
+					'Access-Control-Allow-Headers': '*',
+					'Access-Control-Allow-Origin': '*',
+					'content-type': 'text/plain',
+					'status' : 403
+				},
 			})
 	}
 }

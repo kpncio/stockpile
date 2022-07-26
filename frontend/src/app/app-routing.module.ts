@@ -1,31 +1,36 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PortfolioComponent } from './portfolio/portfolio.component';
-import { ExchangeComponent } from './exchange/exchange.component';
-import { LobbyComponent } from './lobby/lobby.component';
-import { AccountComponent } from './account/account.component';
-import { PoliciesComponent } from './policies/policies.component';
-import { SitemapComponent } from './sitemap/sitemap.component';
-import { LogoutComponent } from './logout/logout.component';
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
-import { QuotesComponent } from './quotes/quotes.component';
+
+import { LandingComponent } from './components/landing/landing.component';
+import { PortfolioComponent } from './components/portfolio/portfolio.component';
+import { ExchangeComponent } from './components/exchange/exchange.component';
+import { LobbyComponent } from './components/lobby/lobby.component';
+import { AccountComponent } from './components/account/account.component';
+import { SignupComponent } from './components/account/signup/signup.component';
+import { LoginComponent } from './components/account/login/login.component';
+import { LogoutComponent } from './components/account/logout/logout.component';
+import { QuoteComponent } from './components/quote/quote.component';
+import { PoliciesComponent } from './components/policies/policies.component';
+import { SitemapComponent } from './components/sitemap/sitemap.component';
+import { UnknownComponent } from './components/unknown/unknown.component';
 
 const routes: Routes = [
+  { path: 'landing', component: LandingComponent},
   { path: '', component: PortfolioComponent },
   { path: 'exchange', component: ExchangeComponent },
   { path: 'lobby', component: LobbyComponent },
   { path: 'account', component: AccountComponent },
+  { path: 'account/signup', component: SignupComponent },
+  { path: 'account/login', component: LoginComponent },
+  { path: 'account/logout', component: LogoutComponent },
+  { path: 'quote/:symbol', component: QuoteComponent},
   { path: 'policies', component: PoliciesComponent },
   { path: 'sitemap', component: SitemapComponent },
-  { path: 'logout', component: LogoutComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent },
-  { path: 'quotes', component: QuotesComponent }
+  { path: '**', component: UnknownComponent}
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

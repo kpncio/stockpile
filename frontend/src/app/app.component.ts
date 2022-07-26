@@ -1,44 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import * as $ from "jquery";
+import { LocalService } from './services/local.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  host: {
-    '(window:resize)': 'onResize($event)'
-  }
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  title = 'Trader';
+export class AppComponent {
+  authenticated: boolean = false;
+  title = 'KPNC Trader';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private local: LocalService) {
+    router.events.subscribe((evt) => {
+      if (evt instanceof NavigationEnd) {
+        if (!this.local.headCredentials()) {
+          this.authenticated = false;
 
-  ngOnInit() {
-    this.router.events.subscribe((evt) => {
-      if (!(evt instanceof NavigationEnd)) {
-        return;
+          switch (router.url) {
+            case '/account/login':
+            case '/account/signup':
+            case '/account/logout':
+            case '/policies':
+            case '/sitemap':
+            case '/landing':
+              break;
+
+            default:
+              this.router.navigate(['/account/login']);
+              break;
+          }
+        } else {
+          this.authenticated = true;
+        }
       }
-
-      $("html").animate({ scrollTop: 0 }, 250);
-      $('#nav').hide();
     });
-
-    if (window.innerWidth < 750) { $('#hl').show(); $('#hf').hide(); } else { $('#hl').hide(); $('#hf').show(); }
-    if (window.innerWidth < 750) { $('#fl').show(); $('#ff').hide(); } else { $('#fl').hide(); $('#ff').show(); }
-
-    $('#nav').hide;
-  }
-
-  onResize() {
-    if (window.innerWidth < 750) { $('#hl').show(); $('#hf').hide(); } else { $('#hl').hide(); $('#hf').show(); }
-    if (window.innerWidth < 750) { $('#fl').show(); $('#ff').hide(); } else { $('#fl').hide(); $('#ff').show(); }
-
-    $('#nav').hide();
-  }
-
-  nav() {
-    $('#nav').toggle(250);
   }
 }

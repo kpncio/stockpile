@@ -1,0 +1,49 @@
+<footer class="container nosel">
+    <div class="full" *ngIf="(width$ | async)! >= 750">
+      <table>
+        <tr>
+          <td>
+            <a href="https://www.kpnc.io/"><img src="https://content.kpnc.io/img/kpnc/logodark.webp" alt="~KPNC~">&shy;</a>
+            <small>Copyright 2022 &copy; KPNC Technology<br>
+              <a routerLink="/policies">Policies</a> /
+              <a routerLink="/sitemap">Sitemap</a> /
+              <a routerLink="/account">Account</a>
+            </small>
+          </td>
+          <td>
+            <div class="social">
+              <ul>
+                <li><a target="_blank" rel="noopener" href="https://github.com/kpncio/trader/"><img src="https://content.kpnc.io/img/kpnc/github.webp" alt="G">&shy;</a></li>
+                <li><a target="_blank" rel="noopener" href="https://youtube.com/" ><img src="https://content.kpnc.io/img/kpnc/youtube.webp" alt="Y">&shy;</a></li>
+                <li><a target="_blank" rel="noopener" href="https://iex.io/news/"><img src="https://content.kpnc.io/img/kpnc/news.webp" alt="N">&shy;</a></li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="lite" *ngIf="(width$ | async)! < 750">
+      <table>
+        <tr>
+          <a href="https://www.kpnc.io/"><img src="https://content.kpnc.io/img/kpnc/logodark.webp" alt="~KPNC~">&shy;</a>
+        </tr>
+        <tr>
+          <small>Copyright 2022 &copy; KPNC Technology<br>
+            <a routerLink="/policies">Policies</a> /
+            <a routerLink="/sitemap">Sitemap</a> /
+            <a routerLink="/account">Account</a>
+          </small>
+        </tr>
+        <tr>
+          <div class="social">
+            <ul>
+              <li><a target="_blank" rel="noopener" href="https://github.com/kpncio/trader/"><img src="https://content.kpnc.io/img/kpnc/github.webp" alt="G">&shy;</a></li>
+              <li><a target="_blank" rel="noopener" href="https://youtube.com/"><img src="https://content.kpnc.io/img/kpnc/youtube.webp" alt="Y">&shy;</a></li>
+              <li><a target="_blank" rel="noopener" href="https://iex.io/news/"><img src="https://content.kpnc.io/img/kpnc/news.webp" alt="N">&shy;</a></li>
+            </ul>
+          </div>
+        </tr>
+      </table>
+    </div>
+</footer>
