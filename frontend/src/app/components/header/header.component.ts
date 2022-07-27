@@ -1,6 +1,6 @@
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs';
 
 @Component({
@@ -12,7 +12,7 @@ import { map } from 'rxjs';
 export class HeaderComponent implements OnInit {
   width$ = this.resize$.pipe(map((entry) => entry.contentRect.width));
 
-  constructor(private router: Router, private resize$: NgResizeObserver) {}
+  constructor(private router: Router, private ngZone: NgZone, private resize$: NgResizeObserver) {}
 
   ngOnInit(): void {
     this.router.events.subscribe((evt) => {
@@ -27,5 +27,9 @@ export class HeaderComponent implements OnInit {
 
   onNavigation(): void {
     $('#nav').toggle(250);
+  }
+
+  routerLink(route: any[]): void {
+    this.ngZone.run(() => this.router.navigate(route)).then();
   }
 }

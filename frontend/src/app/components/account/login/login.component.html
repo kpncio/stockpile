@@ -10,9 +10,9 @@
     <form #form="ngForm" (submit)="submit(form, [username.viewModel, password.viewModel])" *ngIf="!submitting">
       <a *ngIf="failed" style="cursor: pointer; text-decoration: none;" (click)="dismiss()"><h3>{{message}}</h3></a>
       <small *ngIf="valid(username)">*Please enter your username...</small>
-      <input required ngModel #username="ngModel" name="username" type="text">
+      <input required ngModel #username="ngModel" name="username" type="text" placeholder="Username">
       <small *ngIf="valid(password)">*Please enter your password...</small>
-      <input required ngModel #password="ngModel" name="password" type="password">
+      <input required ngModel #password="ngModel" name="password" type="password" placeholder="Password">
       <a routerLink="/account/signup">Need an account? Signup here...</a>
       <button type="submit">Login</button>
     </form>

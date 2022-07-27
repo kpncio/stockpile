@@ -65,6 +65,7 @@ td {
   float: right;
   height: 400px;
   position: relative;
+  margin-bottom: 100px;
 
   small {
       width: 100%;
@@ -90,6 +91,7 @@ td {
   width: 100%;
   display: block;
   margin-top: 40px;
+  margin-bottom: 60px;
 
   tr {
       padding: 10px 0;
@@ -134,12 +136,4 @@ td {
           background-color: $mid;
       }
   }
-}
-
-#cf {
-  margin-bottom: 100px;
-}
-
-#cl {
-  margin-bottom: 60px;
 }

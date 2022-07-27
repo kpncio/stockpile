@@ -10,6 +10,7 @@ export class LocalService {
   public postCredentials(user: string, pass: string, real: string): void {
     user = this.encodeB644(user);
     pass = this.encodeB644(pass);
+    real = this.encodeB644(real);
 
     localStorage.setItem('username', user);
     localStorage.setItem('password', pass);
@@ -35,13 +36,13 @@ export class LocalService {
   public getCredentials(): string[] {
     if (!this.headCredentials()) {
       return ['', '', ''];
-    }
+    } else {
+      let user = this.decodeB644(localStorage.getItem('username')!);
+      let pass = this.decodeB644(localStorage.getItem('password')!);
+      let real = this.decodeB644(localStorage.getItem('realname')!);
 
-    return [
-      localStorage.getItem('username')!,
-      localStorage.getItem('password')!,
-      localStorage.getItem('realname')!
-    ]
+      return [user, pass, real];
+    }
   }
 
   public deleteCredentials(): void {
@@ -62,4 +63,3 @@ export class LocalService {
     return decodeURIComponent(atob(atob(atob(atob(decodee)))));
   }
 }
-

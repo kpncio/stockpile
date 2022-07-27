@@ -1,12 +1,12 @@
 <header class="full" *ngIf="(width$ | async)! >= 750">
   <div class="container nosel">
-    <a routerLink="/" class="logo"><img src="https://content.kpnc.io/img/kpnc/traders.webp" alt="~KPNC~">&shy;</a>
+    <a (click)="routerLink(['/'])" class="logo"><img src="https://content.kpnc.io/img/kpnc/traders.webp" alt="~KPNC~">&shy;</a>
     <nav>
       <ul>
-        <li><a routerLink="/">Portfolio</a></li>
-        <li><a routerLink="/exchange">Exchange</a></li>
-        <li><a routerLink="/lobby">Lobby</a></li>
-        <li><a routerLink="/account">Account</a></li>
+        <li><a (click)="routerLink(['/'])">Portfolio</a></li>
+        <li><a (click)="routerLink(['/exchange'])">Exchange</a></li>
+        <li><a (click)="routerLink(['/lobby'])">Lobby</a></li>
+        <li><a (click)="routerLink(['/account'])">Account</a></li>
       </ul>
     </nav>
   </div>
@@ -14,14 +14,14 @@
 
 <header class="lite" *ngIf="(width$ | async)! < 750">
   <div class="container nosel">
-    <a routerLink="/" class="logo"><img src="https://content.kpnc.io/img/kpnc/traders.webp" alt="~KPNC~">&shy;</a>
+    <a (click)="routerLink(['/'])" class="logo"><img src="https://content.kpnc.io/img/kpnc/traders.webp" alt="~KPNC~">&shy;</a>
     <button (click)="onNavigation()"><img src="https://content.kpnc.io/img/aprox4/assets/web/menu.webp" alt="=">&shy;</button>
     <nav id="nav" hidden>
       <ul>
-        <li id="first"><a routerLink="/">Portfolio</a></li>
-        <li><a routerLink="/exchange">Exchange</a></li>
-        <li><a routerLink="/lobby">Lobby</a></li>
-        <li><a routerLink="/account">Account</a></li>
+        <li id="first"><a (click)="routerLink(['/'])">Portfolio</a></li>
+        <li><a (click)="routerLink(['/exchange'])">Exchange</a></li>
+        <li><a (click)="routerLink(['/lobby'])">Lobby</a></li>
+        <li><a (click)="routerLink(['/account'])">Account</a></li>
       </ul>
     </nav>
   </div>

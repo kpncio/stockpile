@@ -13,114 +13,12 @@ import { map } from 'rxjs';
   providers: [...ngResizeObserverProviders]
 })
 export class QuoteComponent implements OnInit {
+  @ViewChild('chartfull') chartfull?: ElementRef;
+  @ViewChild('chartlite') chartlite?: ElementRef;
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   width$ = this.resize$.pipe(map((entry) => entry.contentRect.width));
   symbol: string | null | undefined;
   quotes: any;
-
-  constructor(private router: Router, private route: ActivatedRoute, private resize$: NgResizeObserver, private external: ExternalService) {}
-
-  ngOnInit() {
-    if (this.route.snapshot.paramMap.get('symbol') == null) {
-      this.router.navigate(['/']);
-    } else {
-      this.symbol = this.route.snapshot.paramMap.get('symbol')!.toUpperCase();
-      this.router.navigate(['/quote/'  + this.symbol]);
-    }
-
-    let url = 'https://app.kpnc.io/trader/retriever/quotes/' + this.symbol;
-
-    this.external.getRequest('user', 'pass', 0, url).subscribe((response) => {
-      this.quotes = response;
-
-      this.quotes.data.forEach((quote: any) => {
-        this.chartdata.datasets[0].data.push(quote.price);
-      });
-
-      const last = this.chartdata.datasets[0].data[this.chartdata.datasets[0].data.length - 1];
-      while (this.chartdata.datasets[0].data.length < 1351) {
-        this.chartdata.datasets[0].data.push(last);
-      }
-    });
-  }
-
-  onRetrieve() {
-    this.onResize();
-
-    let rgb; let rgba;
-    if (this.quotes.data[0].change < 0) {
-      rgb = 'rgb(194, 38, 27)';
-      rgba = 'rgba(194, 38, 27, 0)'
-    } else {
-      rgb = 'rgb(27, 194, 55)';
-      rgba = 'rgba(27, 194, 55, 0)'
-    }
-
-    if (this.chartfull != undefined) {
-      const gradient = this.chartfull!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
-      gradient.addColorStop(0, rgb);
-      gradient.addColorStop(1,rgba);
-      this.chartdata.datasets[0].backgroundColor = gradient;
-    }
-
-    if (this.chartlite != undefined) {
-      const gradient = this.chartlite!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
-      gradient.addColorStop(0, rgb);
-      gradient.addColorStop(1, rgba);
-      this.chartdata.datasets[0].backgroundColor = gradient;
-    }
-
-    this.chartdata.datasets[0].borderColor = rgb;
-
-    this.chart?.update();
-  }
-
-  onResize() {
-    if (window.innerWidth < 870) {
-      $('#tl').show();
-      $('#tf').hide();
-    } else {
-      $('#tl').hide();
-      $('#tf').show();
-    }
-
-    if (window.innerWidth < 1060) {
-      $('#cl').show();
-      $('#cf').hide();
-    } else {
-      $('#cl').hide();
-      $('#cf').show();
-    }
-  }
-
-  date(json: string) {
-    let date = new Date(json);
-
-    return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
-  }
-
-  time(json: string) {
-    let date = new Date(json);
-
-    let meridiem = 'AM';
-
-    let hours = date.getHours() + 4;
-    if (hours >= 12) {
-      meridiem = 'PM';
-    } if (hours > 12) {
-      hours -= 12;
-    }
-
-    let minutes = date.getMinutes();
-    if (minutes == 1 || minutes == 31) {
-      minutes--;
-    }
-
-    return `${hours}:${String(minutes).padStart(2, '0')} ${meridiem} EST`;
-  }
-
-  zero(json: number, fix: number) {
-    return json.toFixed(fix);
-  }
 
   chartdata: ChartConfiguration['data'] = {
     datasets: [
@@ -171,9 +69,90 @@ export class QuoteComponent implements OnInit {
 
   charttype: ChartType = 'line';
 
-  @ViewChild('chartfull') chartfull?: ElementRef;
-  @ViewChild('chartlite') chartlite?: ElementRef;
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+  constructor(private router: Router, private route: ActivatedRoute, private resize$: NgResizeObserver, private external: ExternalService) {}
+
+  ngOnInit() {
+    if (this.route.snapshot.paramMap.get('symbol') == null) {
+      this.router.navigate(['/']);
+    } else {
+      this.symbol = this.route.snapshot.paramMap.get('symbol')!.toUpperCase();
+      this.router.navigate(['/quote/'  + this.symbol]);
+    }
+
+    let url = 'https://app.kpnc.io/trader/retriever/quotes/' + this.symbol;
+
+    this.external.getRequest('user', 'pass', 0, url).subscribe((response) => {
+      this.quotes = response;
+
+      this.quotes.data.forEach((quote: any) => {
+        this.chartdata.datasets[0].data.push(quote.price);
+      });
+
+      const last = this.chartdata.datasets[0].data[this.chartdata.datasets[0].data.length - 1];
+      while (this.chartdata.datasets[0].data.length < 1351) {
+        this.chartdata.datasets[0].data.push(last);
+      }
+    });
+  }
+
+  onRetrieve() {
+    let rgb; let rgba;
+    if (this.quotes.data[0].change < 0) {
+      rgb = 'rgb(194, 38, 27)';
+      rgba = 'rgba(194, 38, 27, 0)'
+    } else {
+      rgb = 'rgb(27, 194, 55)';
+      rgba = 'rgba(27, 194, 55, 0)'
+    }
+
+    if (this.chartfull != undefined) {
+      const gradient = this.chartfull!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
+      gradient.addColorStop(0, rgb);
+      gradient.addColorStop(1,rgba);
+      this.chartdata.datasets[0].backgroundColor = gradient;
+    }
+
+    if (this.chartlite != undefined) {
+      const gradient = this.chartlite!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
+      gradient.addColorStop(0, rgb);
+      gradient.addColorStop(1, rgba);
+      this.chartdata.datasets[0].backgroundColor = gradient;
+    }
+
+    this.chartdata.datasets[0].borderColor = rgb;
+
+    this.chart?.update();
+  }
+
+  date(json: string) {
+    let date = new Date(json);
+
+    return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+  }
+
+  time(json: string) {
+    let date = new Date(json);
+
+    let meridiem = 'AM';
+
+    let hours = date.getHours() + 4;
+    if (hours >= 12) {
+      meridiem = 'PM';
+    } if (hours > 12) {
+      hours -= 12;
+    }
+
+    let minutes = date.getMinutes();
+    if (minutes == 1 || minutes == 31) {
+      minutes--;
+    }
+
+    return `${hours}:${String(minutes).padStart(2, '0')} ${meridiem} EST`;
+  }
+
+  zero(json: number, fix: number) {
+    return json.toFixed(fix);
+  }
 
   timeFrame(time?: string) {
     switch(time) {

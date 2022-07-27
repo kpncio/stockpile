@@ -1,5 +1,6 @@
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import { map } from 'rxjs';
 
 @Component({
@@ -11,5 +12,9 @@ import { map } from 'rxjs';
 export class FooterComponent {
   width$ = this.resize$.pipe(map((entry) => entry.contentRect.width));
 
-  constructor(private resize$: NgResizeObserver) {}
+  constructor(private router: Router, private ngZone: NgZone, private resize$: NgResizeObserver) {}
+
+  routerLink(route: any[]): void {
+    this.ngZone.run(() => this.router.navigate(route)).then();
+  }
 }
