@@ -1,0 +1,92 @@
+@import '../../../../colors.scss';
+
+/*Symbol*/
+main {
+  width: 95%;
+  height: 100px;
+  margin: 10px auto;
+  transition: 200ms;
+  border-radius: 10px;
+  border: 1px $light solid;
+  transform: translateX(-15px);
+
+  .full, .half {
+    transform: translateY(-15px);
+
+    table {
+      width: 100%;
+
+      td {
+        height: 100px;
+        padding: 0 10px;
+        font-size: 16px;
+
+        .chart {
+          margin: 0;
+          width: 100%;
+          height: 125px;
+          transform: translateY(10px);
+        }
+
+        td {
+          height: initial;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .logo {
+      top: 50%;
+      left: 33%;
+      width: 190px;
+      height: 95px;
+      position: absolute;
+      filter: opacity(10%);
+      transform: translate(0, -50%);
+
+      // left: 50%;
+      // transform: translate(-50%, -50%);
+    }
+  }
+
+  .lite {
+    transform: translateY(-15px);
+
+    table {
+      width: 100%;
+
+      tr {
+        height: 100px;
+
+        .chart {
+          margin: 0 auto;
+          width: 80%;
+          height: 100px;
+          transform: translateY(-8px);
+        }
+
+        td {
+          padding: 10px;
+          font-size: 12px;
+          text-align: center;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .logo {
+      top: 50%;
+      left: 50%;
+      width: 190px;
+      height: 95px;
+      position: absolute;
+      filter: opacity(10%);
+      transform: translate(-50%, -60%);
+    }
+  }
+
+  &:hover {
+    background-color: $darken;
+  }
+}
+

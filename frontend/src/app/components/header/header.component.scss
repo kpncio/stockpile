@@ -23,11 +23,11 @@
     img {
       height: 33px;
       transition: 200ms;
-      filter: grayscale(1);
       transform: translateY(9px);
+      filter: contrast(0) brightness(2);
 
       &:hover {
-        filter: grayscale(0);
+        filter: contrast(1) brightness(1);
       }
     }
   }
@@ -71,11 +71,11 @@
     img {
       height: 33px;
       transition: 200ms;
-      filter: grayscale(1);
       transform: translateY(9px);
+      filter: contrast(0) brightness(2);
 
       &:hover {
-        filter: grayscale(0);
+        filter: contrast(1) brightness(1);
       }
     }
   }
@@ -83,10 +83,9 @@
   button {
     float: right;
     border: none;
-    color: rgba(0,0,0,0);
+    color: $trans;
+    background-color: $trans;
     transform: translateY(12px);
-    background-color: rgba(0,0,0,0);
-
     img {
       height: 24px;
       color: $white;

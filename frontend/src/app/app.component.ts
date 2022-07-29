@@ -27,7 +27,7 @@ export class AppComponent {
               break;
 
             default:
-              this.router.navigate(['/account/login']);
+              this.router.navigate(['/landing']);
               break;
           }
         } else {

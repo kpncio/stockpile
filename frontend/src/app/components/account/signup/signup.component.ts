@@ -22,48 +22,59 @@ export class SignupComponent implements OnInit {
     }
   }
 
-  submit(form: any, data: string[]): void {
-    if (form.invalid) {
-      this.attempted = true;
-    } else {
+  submit(user: string, pass: string, conf: string): void {
+    this.attempted = true;
+
+    if (this.valid(0, user) && this.valid(1, pass) && this.valid(2, pass, conf)) {
       this.submitting = true;
 
-      const user = data[0];
-      const pass = data[1];
-      const conf = data[2];
+      this.external.getRequest([user, pass, ''], 1, 'https://app.kpnc.io/trader/authenticator/create').subscribe((response) => {
+        if (response != null) {
+          if (response.verified) {
+            this.local.postCredentials(user.toLowerCase(), pass, user, 'none');
 
-      if (conf === pass) {
-        this.external.getRequest(user, pass, 1, 'https://app.kpnc.io/trader/authenticator/create').subscribe((response) => {
-          if (response != null) {
-            if (response.verified) {
-             this.local.postCredentials(user.toLowerCase(), pass, user);
-
-              this.router.navigate(['/']);
-            } else {
-              this.message = response.message;
-              this.failed = true;
-              this.submitting = false;
-            }
+            this.router.navigate(['/']);
           } else {
-            this.failed = true;
+            this.message = response.message;
             this.submitting = false;
+            this.attempted = false;
+            this.failed = true;
           }
-        });
-      } else {
-        this.message = 'Passwords do not match...';
-        this.failed = true;
-        this.submitting = false;
-      }
+        } else {
+          this.submitting = false;
+          this.attempted = false;
+          this.failed = true;
+        }
+      });
     }
   }
 
-  valid(input: any): boolean {
-    if (input.touched && input.invalid) {
-      return true;
-    }
+  valid(type: number, value: string, comparison?: string): boolean {
+    switch (type) {
+      case 0:
+        const userex = /^([\w]{3,25})$/;
 
-    if (this.attempted && input.invalid) {
-      return true;
+        if (userex.test(value)) {
+          return true;
+        }
+        break;
+
+      case 1:
+        const passex = /^([\w`~!@#$%\^&*()\-_=+;:'",.<>|\\/?]{5,})$/;
+
+        if (passex.test(value)) {
+          return true;
+        }
+        break;
+
+      case 2:
+        if (value === comparison) {
+          return true;
+        }
+        break;
+
+      default:
+        break;
     }
 
     return false;

@@ -1,29 +1,28 @@
-import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ExternalService } from './../../services/external.service';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
-import { map } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-quote',
   templateUrl: './quote.component.html',
-  styleUrls: ['./quote.component.scss'],
-  providers: [...ngResizeObserverProviders]
+  styleUrls: ['./quote.component.scss']
 })
 export class QuoteComponent implements OnInit {
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   @ViewChild('chartfull') chartfull?: ElementRef;
   @ViewChild('chartlite') chartlite?: ElementRef;
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-  width$ = this.resize$.pipe(map((entry) => entry.contentRect.width));
   symbol: string | null | undefined;
+  width: number | undefined;
+  resize!: Subscription;
   quotes: any;
 
   chartdata: ChartConfiguration['data'] = {
     datasets: [
       {
-        //stepped: 'after',
+        // stepped: 'after',
         fill: 'origin',
         pointRadius: 0,
         borderWidth: 1,
@@ -58,7 +57,7 @@ export class QuoteComponent implements OnInit {
         grid: { color: 'rgba(255,255,255,0)' }
       },
       y: {
-        //beginAtZero: true,
+        // beginAtZero: true,
         ticks: { color: 'white' },
         grid: { color: 'rgba(255,255,255,0.25)' }
       }
@@ -69,9 +68,13 @@ export class QuoteComponent implements OnInit {
 
   charttype: ChartType = 'line';
 
-  constructor(private router: Router, private route: ActivatedRoute, private resize$: NgResizeObserver, private external: ExternalService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private external: ExternalService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.resize = fromEvent(window, 'resize').subscribe( evt => {
+      this.width = window.innerWidth;
+    });
+
     if (this.route.snapshot.paramMap.get('symbol') == null) {
       this.router.navigate(['/']);
     } else {
@@ -81,7 +84,7 @@ export class QuoteComponent implements OnInit {
 
     let url = 'https://app.kpnc.io/trader/retriever/quotes/' + this.symbol;
 
-    this.external.getRequest('user', 'pass', 0, url).subscribe((response) => {
+    this.external.getRequest(['', '', ''], 0, url).subscribe((response) => {
       this.quotes = response;
 
       this.quotes.data.forEach((quote: any) => {
@@ -95,7 +98,9 @@ export class QuoteComponent implements OnInit {
     });
   }
 
-  onRetrieve() {
+  onRetrieve(): void {
+    this.width = window.innerWidth;
+
     let rgb; let rgba;
     if (this.quotes.data[0].change < 0) {
       rgb = 'rgb(194, 38, 27)';
@@ -124,13 +129,13 @@ export class QuoteComponent implements OnInit {
     this.chart?.update();
   }
 
-  date(json: string) {
+  date(json: string): string {
     let date = new Date(json);
 
     return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
   }
 
-  time(json: string) {
+  time(json: string): string {
     let date = new Date(json);
 
     let meridiem = 'AM';
@@ -150,11 +155,11 @@ export class QuoteComponent implements OnInit {
     return `${hours}:${String(minutes).padStart(2, '0')} ${meridiem} EST`;
   }
 
-  zero(json: number, fix: number) {
+  zero(json: number, fix: number): any {
     return json.toFixed(fix);
   }
 
-  timeFrame(time?: string) {
+  timeFrame(time?: string): void {
     switch(time) {
       case 'day':
         this.chartdata.labels = [ // 15 Data Points

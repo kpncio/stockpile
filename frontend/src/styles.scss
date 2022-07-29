@@ -6,8 +6,8 @@ html, body {
   padding: 0;
   height: 100%;
   color: $white;
-  max-width: 100%;
   font-size: 18px;
+  min-height: 100vh;
   overflow-x: hidden;
   scroll-behavior: smooth;
   background-color: $dark;
@@ -35,7 +35,7 @@ h1 {
   font-size: 36px;
   text-align: center;
   letter-spacing: 10px;
-  background: linear-gradient(165deg, rgba(20,252,195,1) 0%, rgba(136,20,252,1) 100%);
+  background: linear-gradient(165deg, $turquoise 0%, $magenta 100%);
 }
 
 h2 {

@@ -1,4 +1,4 @@
-<h1>Account</h1>
+<h1 class="nosel">Account</h1>
 
 <main class="nosel">
   <div class="container">
@@ -6,79 +6,80 @@
     <div class="circle">
       <img src="https://avatars.dicebear.com/api/croodles-neutral/{{user}}.svg" alt="">
     </div>
-    <h2 style="text-align: center;">{{real}}</h2>
+    <h2 style="text-align: center;">&mdash;&emsp;{{real}}&emsp;&mdash;</h2>
+    <app-loader *ngIf="submitting"></app-loader>
+    <div class="info success" *ngIf="success != null" (click)="dismiss(0)">
+      <p>{{success}}</p>
+    </div>
+    <div class="info error" *ngIf="error != null" (click)="dismiss(1)">
+      <p>{{error}}</p>
+    </div>
+    <div class="info" *ngIf="info != null" (click)="dismiss(2)">
+      <p *ngIf="info == -1">
+        Information has been updated!
+      </p>
+      <p *ngIf="info == 0">
+        This is the alias used for authenitcation. You cannot change your username.
+      </p>
+      <p *ngIf="info == 1">
+        This is the alias others see online. You may change your display name at anytime.
+        <br><br>
+        [Type a <i>&lt;new display name&gt;</i> and ENTER to change your display name]
+      </p>
+      <p *ngIf="info == 2">
+        This is your account password. You may change your password at anytime.
+        <br><br>
+        [Type a <i>&lt;new password&gt;</i> and ENTER to change your password]
+      </p>
+      <p *ngIf="info == 3">
+        This is your current lobby identifier. You may change your lobby at anytime.
+        <br><br>
+        [Type a <i>&lt;lobby code&gt;</i> and ENTER to change your lobby]
+      </p>
+      <p *ngIf="info == 4">
+        This is to PERMANENTLY delete your account. See more information in <a routerLink="/policies">policies</a>.<br>You may delete your account at anytime.
+        <br><br>
+        [Type <i>"DELETE"</i> and ENTER to delete your account]
+      </p>
+    </div>
     <table>
-      <tr class="error">
-        <td>Errrrrrrror:</td>
+      <tr>
+        <td>Username<sup><a (click)="info = 0">?</a></sup>:</td>
+        <td><form><input readonly value="{{user}}"></form></td>
+      </tr>
+      <tr>
+        <td>Display Name<sup><a (click)="info = 1">?</a></sup>:</td>
         <td>
-          <form>
-            <input readonly value="Error!">
+          <form #displayForm="ngForm" (submit)="changeDisplay(display.value)">
+            <input required ngModel #display="ngModel" name="display" type="text" placeholder="New Display Name">
+            <button type="submit" style="display: none;"></button>
           </form>
         </td>
       </tr>
       <tr>
-        <td>Username<div class="info"><p>This is the alias used for authenitcation.
-          <br><br>
-          You cannot change your username.
-        </p></div>:</td>
+        <td>Change Password<sup><a (click)="info = 2">?</a></sup>:</td>
         <td>
-          <form>
-            <input readonly value="{{user}}">
+          <form #passwordForm="ngForm" (submit)="changePassword(password.value)">
+            <input required ngModel #password="ngModel" name="password" type="password" placeholder="New Password">
+            <button type="submit" style="display: none;"></button>
           </form>
         </td>
       </tr>
       <tr>
-        <td>Display Name<div class="info"><p>This is the alias others see online.
-          <br><br>
-          You may change your display name at anytime.
-          <br><br>
-          [Type a <i>*new display name*</i> and ENTER to change your display name]
-        </p></div>:</td>
+        <td>Lobby Name<sup><a (click)="info = 3">?</a></sup>:</td>
         <td>
-          <form>
-            <input placeholder="New Display Name" value="{{real}}">
+          <form #lobbyForm="ngForm" (submit)="changeLobby(lobby.value)">
+            <input required ngModel #lobby="ngModel" name="lobby" type="text" placeholder="Lobby Name">
+            <button type="submit" style="display: none;"></button>
           </form>
         </td>
       </tr>
       <tr>
-        <td>Change Password<div class="info"><p>This is your account password.
-          <br><br>
-          You may change your password at anytime.
-          <br><br>
-          [Type a <i>*new password*</i> and ENTER to change your password]
-        </p></div>:</td>
+        <td>Delete Account<sup><a (click)="info = 4">?</a></sup>:</td>
         <td>
-          <form>
-            <input placeholder="New Password">
-          </form>
-        </td>
-      </tr>
-      <tr>
-        <td>Lobby Code<div class="info"><p>This is your current lobby code.
-          <br><br>
-          You may change your lobby at anytime.
-          <br><br>
-          [Type a <i>*lobby code*</i> and ENTER to change your lobby]
-        </p></div>:</td>
-        <td>
-          <form>
-            <input placeholder="Lobby Code">
-          </form>
-        </td>
-      </tr>
-      <tr>
-        <td>Delete Account<div class="info">
-          <p>
-            This is to PERMANENTLY delete your account. See more information in <a routerLink="/policies">policies</a>.
-            <br><br>
-            You may delete your account at anytime.
-            <br><br>
-            [Type "<i>DELETE</i>" and ENTER to delete your account]
-          </p>
-        </div>:</td>
-        <td>
-          <form>
-            <input placeholder="DELETE">
+          <form #deleteForm="ngForm" (submit)="deleteAccount(deleted.value)">
+            <input ngModel #deleted="ngModel" name="delete" type="text" placeholder="DELETE">
+            <button type="submit" style="display: none;"></button>
           </form>
         </td>
       </tr>

@@ -1,7 +1,20 @@
-<h1>Exchange</h1>
+<h1 class="nosel">Exchange</h1>
 
-<main>
-    <div class="container">
-        <p>exchange works!</p>
+<main class="nosel">
+  <div class="container">
+    <h2>Latest quotes for the NDX (NASDAQ-100):</h2>
+    <app-loader *ngIf="symbols.length == 0"></app-loader>
+    <table *ngIf="symbols.length > 0">
+      <h4>⤷ {{nasdaq.length}} Symbols</h4>
+      <tr *ngFor="let symbol of symbols">
+        <app-symbol [symbol]="symbol"></app-symbol>
+      </tr>
+    </table>
+    <div class="more" *ngIf="!nomore">
+      <button (click)="more()">Load More</button>
     </div>
+    <div *ngIf="trigger">
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+  </div>
 </main>

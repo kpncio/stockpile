@@ -1,4 +1,4 @@
-<header class="full" *ngIf="(width$ | async)! >= 750">
+<header class="full" *ngIf="width! >= 750">
   <div class="container nosel">
     <a (click)="routerLink(['/'])" class="logo"><img src="https://content.kpnc.io/img/kpnc/traders.webp" alt="~KPNC~">&shy;</a>
     <nav>
@@ -12,7 +12,7 @@
   </div>
 </header>
 
-<header class="lite" *ngIf="(width$ | async)! < 750">
+<header class="lite" *ngIf="width! < 750">
   <div class="container nosel">
     <a (click)="routerLink(['/'])" class="logo"><img src="https://content.kpnc.io/img/kpnc/traders.webp" alt="~KPNC~">&shy;</a>
     <button (click)="onNavigation()"><img src="https://content.kpnc.io/img/aprox4/assets/web/menu.webp" alt="=">&shy;</button>

@@ -1,18 +1,25 @@
-import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { fromEvent, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss'],
-  providers: [...ngResizeObserverProviders]
+  styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent {
-  width$ = this.resize$.pipe(map((entry) => entry.contentRect.width));
+export class FooterComponent implements OnInit {
+  width: number | undefined;
+  resize!: Subscription;
 
-  constructor(private router: Router, private ngZone: NgZone, private resize$: NgResizeObserver) {}
+  constructor(private router: Router, private ngZone: NgZone) {}
+
+  ngOnInit(): void {
+    this.resize = fromEvent(window, 'resize').subscribe( evt => {
+      this.width = window.innerWidth;
+    });
+
+    this.width = window.innerWidth;
+  }
 
   routerLink(route: any[]): void {
     this.ngZone.run(() => this.router.navigate(route)).then();

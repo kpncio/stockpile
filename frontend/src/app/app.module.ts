@@ -21,6 +21,7 @@ import { PoliciesComponent } from './components/policies/policies.component';
 import { SitemapComponent } from './components/sitemap/sitemap.component';
 import { QuoteComponent } from './components/quote/quote.component';
 import { UnknownComponent } from './components/unknown/unknown.component';
+import { SymbolComponent } from './components/exchange/symbol/symbol.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { UnknownComponent } from './components/unknown/unknown.component';
     PoliciesComponent,
     SitemapComponent,
     QuoteComponent,
-    UnknownComponent
+    UnknownComponent,
+    SymbolComponent
   ],
   imports: [
     BrowserModule,

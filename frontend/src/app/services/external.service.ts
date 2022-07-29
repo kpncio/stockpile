@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class ExternalService {
   constructor(private http: HttpClient, private local: LocalService) { }
 
-  public getRequest(user: string, pass: string, auth: number, url: string): Observable<any> {
+  public getRequest(cred: string[], auth: number, url: string): Observable<any> {
     let headers;
     switch (auth) {
       case 0:
@@ -17,7 +17,8 @@ export class ExternalService {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'X-KPNC-AUTH-USER': encodeURIComponent(this.local.getCredentials()[0]),
-          'X-KPNC-AUTH-PASS': encodeURIComponent(this.local.getCredentials()[1])
+          'X-KPNC-AUTH-PASS': encodeURIComponent(this.local.getCredentials()[1]),
+          'X-KPNC-AUTH-INFO': encodeURIComponent(cred[2])
         }
         break;
 
@@ -25,8 +26,9 @@ export class ExternalService {
         headers = {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'X-KPNC-AUTH-USER': encodeURIComponent(user),
-          'X-KPNC-AUTH-PASS': encodeURIComponent(pass)
+          'X-KPNC-AUTH-USER': encodeURIComponent(cred[0]),
+          'X-KPNC-AUTH-PASS': encodeURIComponent(cred[1]),
+          'X-KPNC-AUTH-INFO': encodeURIComponent(cred[2])
         }
         break;
 

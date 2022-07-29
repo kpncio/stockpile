@@ -1,20 +1,25 @@
-import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
-  providers: [...ngResizeObserverProviders]
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  width$ = this.resize$.pipe(map((entry) => entry.contentRect.width));
+  width: number | undefined;
+  resize!: Subscription;
 
-  constructor(private router: Router, private ngZone: NgZone, private resize$: NgResizeObserver) {}
+  constructor(private router: Router, private ngZone: NgZone) {}
 
   ngOnInit(): void {
+    this.resize = fromEvent(window, 'resize').subscribe( evt => {
+      this.width = window.innerWidth;
+    });
+
+    this.width = window.innerWidth;
+
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;

@@ -1,6 +1,5 @@
 import { LocalService } from './../../../services/local.service';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-logout',
@@ -8,11 +7,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./logout.component.scss']
 })
 export class LogoutComponent implements OnInit {
-  constructor (private router: Router, private local: LocalService) {}
+  constructor (private local: LocalService) {}
 
   ngOnInit(): void {
-    this.local.deleteCredentials();
+    this.delay().then(() => this.local.deleteCredentials());
+  }
 
-    this.router.navigate(['/account/login']);
+  delay() {
+    return new Promise(resolve => setTimeout(resolve, 2000));
   }
 }

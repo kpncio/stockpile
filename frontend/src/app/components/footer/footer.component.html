@@ -1,5 +1,5 @@
 <footer class="container nosel">
-    <div class="full" *ngIf="(width$ | async)! >= 750">
+    <div class="full" *ngIf="width! >= 750">
       <table>
         <tr>
           <td>
@@ -23,7 +23,7 @@
       </table>
     </div>
 
-    <div class="lite" *ngIf="(width$ | async)! < 750">
+    <div class="lite" *ngIf="width! < 750">
       <table>
         <tr>
           <a href="https://www.kpnc.io/"><img src="https://content.kpnc.io/img/kpnc/logodark.webp" alt="~KPNC~">&shy;</a>

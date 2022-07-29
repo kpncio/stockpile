@@ -22,41 +22,52 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  submit(form: any, data: string[]): void {
-    if (form.invalid) {
+  submit(user: string, pass: string): void {
       this.attempted = true;
-    } else {
+    if (this.valid(0, user) && this.valid(1, pass)) {
       this.submitting = true;
 
-      const user = data[0];
-      const pass = data[1];
-
-      this.external.getRequest(user, pass, 1, 'https://app.kpnc.io/trader/authenticator/').subscribe((response) => {
+      this.external.getRequest([user, pass, ''], 1, 'https://app.kpnc.io/trader/authenticator/').subscribe((response) => {
         if (response != null) {
           if (response.verified) {
-            this.local.postCredentials(user.toLowerCase(), pass, response.name);
+            this.local.postCredentials(user.toLowerCase(), pass, response.display, response.lobby);
 
             this.router.navigate(['/']);
           } else {
             this.message = response.message;
-            this.failed = true;
             this.submitting = false;
+            this.attempted = false;
+            this.failed = true;
           }
         } else {
-          this.failed = true;
           this.submitting = false;
+          this.attempted = false;
+          this.failed = true;
         }
       });
     }
   }
 
-  valid(input: any): boolean {
-    if (input.touched && input.invalid) {
-      return true;
-    }
+  valid(type: number, value: string): boolean {
+    switch (type) {
+      case 0:
+        const userex = /^([\w]{3,25})$/;
 
-    if (this.attempted && input.invalid) {
-      return true;
+        if (userex.test(value)) {
+          return true;
+        }
+        break;
+
+      case 1:
+        const passex = /^([\w`~!@#$%\^&*()\-_=+;:'",.<>|\\/?]{5,})$/;
+
+        if (passex.test(value)) {
+          return true;
+        }
+        break;
+
+      default:
+        break;
     }
 
     return false;
