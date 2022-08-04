@@ -7,7 +7,10 @@
 
 <main class="nosel">
   <div class="container">
-    <app-loader *ngIf="!quotes"></app-loader>
+    <div *ngIf="!quotes">
+      <br><br>
+      <app-loader></app-loader>
+    </div>
     <div *ngIf="quotes">
       <h2>
         Latest quote for {{ quotes.data[0].symbol }} ({{ quotes.data[0].name }}):
@@ -228,35 +231,33 @@
           </tr>
         </tbody>
       </table>
+      <table *ngIf="width! < 870" style="width: 100vw; transform: translateX(-7.5vw);">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Price</th>
+            <th>Change</th>
+            <th>Market Cap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let quote of quotes.data">
+            <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
+              {{ date(quote.time, false) }}
+            </td>
+            <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
+              {{ zero(quote.price, 3) }}
+            </td>
+            <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
+              {{ zero(quote.change, 3) }}
+            </td>
+            <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
+              {{ millions(quote.cap) }} M
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="onRetrieve()"></div>
     </div>
-  </div>
-  <div *ngIf="quotes">
-    <table *ngIf="width! < 870" style="width: calc(100vw - 20px);">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Price</th>
-          <th>Change</th>
-          <th>Market Cap</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let quote of quotes.data">
-          <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
-            {{ date(quote.time, false) }}
-          </td>
-          <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
-            {{ zero(quote.price, 3) }}
-          </td>
-          <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
-            {{ zero(quote.change, 3) }}
-          </td>
-          <td [style.color]="quote.change < 0 ? '#c2261b' : '#1bc237'">
-            {{ millions(quote.cap) }} M
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div *ngIf="onRetrieve()"></div>
   </div>
 </main>

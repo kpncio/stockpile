@@ -28,7 +28,7 @@ export class QuoteComponent implements OnInit {
         borderWidth: 1,
         pointHoverRadius: 0,
         borderColor: 'rgb(255, 255, 255)',
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: 'rgba(255, 255, 255, 0)',
         data: []
       }
     ],
@@ -40,6 +40,7 @@ export class QuoteComponent implements OnInit {
   };
 
   chartoptions: ChartConfiguration['options'] = {
+    //aspectRatio: 2,
     layout: {
       padding: {
         right: 12
@@ -59,12 +60,12 @@ export class QuoteComponent implements OnInit {
           maxRotation: 90,
           minRotation: 90
         },
-        grid: { color: 'rgba(255,255,255,0)' }
+        grid: { color: 'rgba(255, 255, 255, 0)' }
       },
       y: {
         // beginAtZero: true,
         ticks: { color: 'white' },
-        grid: { color: 'rgba(255,255,255,0.25)' }
+        grid: { color: 'rgba(255, 255, 255, 0.25)' }
       }
     }, plugins: {
       legend: { display: false }
@@ -99,41 +100,43 @@ export class QuoteComponent implements OnInit {
   onRetrieve(): void {
     this.width = window.innerWidth;
 
-    let rgb; let rgba;
-    if (this.quotes.data[0].change < 0) {
-      rgb = 'rgb(194, 38, 27)';
-      rgba = 'rgba(194, 38, 27, 0)'
-    } else {
-      rgb = 'rgb(27, 194, 55)';
-      rgba = 'rgba(27, 194, 55, 0)'
-    }
+    setTimeout(() => {
+      let rgb; let rgba;
+      if (this.quotes.data[0].change < 0) {
+        rgb = 'rgb(194, 38, 27)';
+        rgba = 'rgba(194, 38, 27, 0)'
+      } else {
+        rgb = 'rgb(27, 194, 55)';
+        rgba = 'rgba(27, 194, 55, 0)'
+      }
 
-    if (this.chartfull != undefined) {
-      const gradient = this.chartfull!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
-      gradient.addColorStop(0, rgb);
-      gradient.addColorStop(1,rgba);
-      this.chartdata.datasets[0].backgroundColor = gradient;
-    }
+      if (this.chartfull != undefined) {
+        const gradient = this.chartfull!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
+        gradient.addColorStop(0, rgb);
+        gradient.addColorStop(1,rgba);
+        this.chartdata.datasets[0].backgroundColor = gradient;
+      }
 
-    if (this.chartlite != undefined) {
-      const gradient = this.chartlite!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
-      gradient.addColorStop(0, rgb);
-      gradient.addColorStop(1, rgba);
-      this.chartdata.datasets[0].backgroundColor = gradient;
-    }
+      if (this.chartlite != undefined) {
+        const gradient = this.chartlite!.nativeElement.getContext('2d').createLinearGradient(0, 0, 0, 333);
+        gradient.addColorStop(0, rgb);
+        gradient.addColorStop(1, rgba);
+        this.chartdata.datasets[0].backgroundColor = gradient;
+      }
 
-    this.chartdata.datasets[0].borderColor = rgb;
+      this.chartdata.datasets[0].borderColor = rgb;
 
-    this.chart?.update();
+      this.chart?.update();
+    }, 500);
   }
 
   date(json: string, full: boolean): string {
     let date = new Date(json);
 
     if (full) {
-      return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+      return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
     } else {
-      return `${date.getMonth()}/${date.getDate()}/${date.getFullYear() % 100}`;
+      return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear() % 100}`;
     }
   }
 

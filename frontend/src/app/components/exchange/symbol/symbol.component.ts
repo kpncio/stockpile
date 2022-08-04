@@ -104,7 +104,11 @@ export class SymbolComponent implements OnInit {
     return Math.floor(cap / 1000000).toLocaleString("en-US");
   }
 
-  zero(json: number, fix: number) {
-    return json.toFixed(fix);
+  zero(json: number | null, fix: number): any {
+    if (json == null) {
+      return this.zero(0, fix);
+    } else {
+      return json.toFixed(fix);
+    }
   }
 }
