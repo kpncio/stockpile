@@ -7,25 +7,61 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./exchange.component.scss']
 })
 export class ExchangeComponent implements OnInit {
-  trigger: boolean = false;
   nomore: boolean = false;
   symbols: string[] = [];
   nasdaq: string[] = [];
   index: number = 0;
+  a: object = {};
+  b: object = {};
 
   constructor(private external: ExternalService) { }
 
   ngOnInit(): void {
-    let url = 'https://app.kpnc.io/trader/retriever/symbols/';
-
-    this.external.getRequest(['', '', ''], 0, url).subscribe((response) => {
+    this.external.getRequest('https://app.kpnc.io/trader/retriever/symbols/').subscribe((response) => {
       this.nasdaq = Object.keys(response);
+      this.a = response;
 
       for (let i = 0; i < 5; i++) {
         this.symbols.push(this.nasdaq[this.index]);
         this.index++;
       }
     });
+
+    this.external.getRequest('https://app.kpnc.io/trader/retriever/names/').subscribe((response) => {
+      this.b = response;
+    });
+  }
+
+  search(search: string): void {
+    if (search.length != 0) {
+      const a = Object.fromEntries(Object.entries(this.a).filter(([key]) => key.toLowerCase().includes(search)));
+
+      const b = Object.fromEntries(Object.entries(this.b).filter(([key]) => key.toLowerCase().includes(search)));
+
+      const c = Object.fromEntries(Object.entries(b).map(
+        ([key, value]) => [value, key]
+      ));
+
+      const results = Object.keys(Object.assign({}, a, c));
+
+      if (results.length != 0) {
+        this.symbols = results;
+      } else {
+        this.symbols = ['NO RESULTS'];
+      }
+
+      this.nomore = true;
+    } else {
+      this.symbols = [];
+      this.index = 0;
+
+      for (let i = 0; i < 5; i++) {
+        this.symbols.push(this.nasdaq[this.index]);
+        this.index++;
+      }
+
+      this.nomore = false;
+    }
   }
 
   more(): void {

@@ -1,9 +1,5 @@
 @import '../../../colors.scss';
 
-:host {
-  display: block;
-}
-
 /*Footer*/
 footer {
   color: $mid;
@@ -39,8 +35,6 @@ footer {
     padding-top: 1em;
     text-align: left;
     border-top: 1px solid $mid;
-
-
 
     table {
       width: 100%;

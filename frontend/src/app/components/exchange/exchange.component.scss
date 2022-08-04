@@ -5,14 +5,47 @@ table {
   width: 100%;
 }
 
-h4 {
-  margin: 0;
-  color: $mid;
-  transform: translateY(-20px);
-}
-
 .more {
+  width: 100%;
   text-align: center;
+
+  input {
+    padding: 8px;
+    color: $white;
+    transition: 200ms;
+    border-radius: 5px;
+    text-align: center;
+    width: min(60%, 300px);
+    background-color: $trans;
+    border: 1px $light solid;
+    font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
+
+    &::placeholder {
+      color: $light;
+    }
+
+    &:hover {
+      background-color: $lighten;
+    }
+
+    &:focus {
+      background-color: $lighten;
+    }
+  }
+
+  small {
+    font-size: 10px;
+
+    a {
+      color: $light;
+      transition: 250ms;
+      text-decoration: none;
+
+      &:hover {
+        color: $blue;
+      }
+    }
+  }
 
   button {
     margin: 10px;
@@ -22,6 +55,7 @@ h4 {
     border-radius: 5px;
     background-color: $trans;
     border: 1px $light solid;
+    font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
 
     &:hover {
       background-color: $lighten;

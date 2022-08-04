@@ -1,7 +1,0 @@
-name = "authenticator"
-main = "src/index.js"
-compatibility_date = "2022-07-21"
-
-[[kv_namespaces]]
-  binding = "kv_users"
-  id = "64e5143a442f4be0b07d130f1e320251"

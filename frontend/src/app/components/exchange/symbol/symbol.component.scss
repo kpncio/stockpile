@@ -4,11 +4,11 @@
 main {
   width: 95%;
   height: 100px;
+  padding: 10px;
   margin: 10px auto;
   transition: 200ms;
   border-radius: 10px;
   border: 1px $light solid;
-  transform: translateX(-15px);
 
   .full, .half {
     transform: translateY(-15px);
@@ -22,10 +22,9 @@ main {
         font-size: 16px;
 
         .chart {
-          margin: 0;
+          margin: 10px;
           width: 100%;
-          height: 125px;
-          transform: translateY(10px);
+          height: 105px;
         }
 
         td {
@@ -58,18 +57,31 @@ main {
       tr {
         height: 100px;
 
-        .chart {
-          margin: 0 auto;
-          width: 80%;
-          height: 100px;
-          transform: translateY(-8px);
+        table {
+          padding-top: 10px;
+
+          tr {
+            height: 15px;
+
+            td {
+              width: 50%;
+              padding: 0 10px;
+              font-size: 12px;
+              text-align: left;
+              white-space: nowrap;
+
+              &:nth-child(odd) {
+                text-align: right;
+              }
+            }
+          }
         }
 
-        td {
-          padding: 10px;
-          font-size: 12px;
-          text-align: center;
-          white-space: nowrap;
+        .chart {
+          width: 95%;
+          margin: auto;
+          height: 80px;
+          transform: translate(-5%, -10px);
         }
       }
     }

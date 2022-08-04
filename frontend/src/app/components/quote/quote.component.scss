@@ -1,13 +1,8 @@
 @import '../../../colors.scss';
 
 /*Quote*/
-img {
-  margin: auto;
-  height: 150px;
-}
-
 table {
-width: 100%;
+  width: 100%;
   text-align: center;
   border-collapse: collapse;
 }
@@ -75,7 +70,7 @@ td {
     padding: 5px 20px;
     background-color: $dark;
     border: 1px solid $light;
-    font-family: "Inter Var", "Roboto", "Arial", sans-serif;
+    font-family: "Inter", "Roboto", "Arial", sans-serif;
 
     &:hover {
       background-color: $mid;
@@ -88,6 +83,7 @@ td {
   display: block;
   margin-top: 40px;
   margin-bottom: 60px;
+
 
   tr {
     padding: 10px 0;
@@ -127,7 +123,7 @@ td {
     padding: 5px 20px;
     background-color: $dark;
     border: 1px solid $light;
-    font-family: "Inter Var", "Roboto", "Arial", sans-serif;
+    font-family: "Inter", "Roboto", "Arial", sans-serif;
 
     &:hover {
       background-color: $mid;

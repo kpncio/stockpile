@@ -40,6 +40,11 @@ export class QuoteComponent implements OnInit {
   };
 
   chartoptions: ChartConfiguration['options'] = {
+    layout: {
+      padding: {
+        right: 12
+      }
+    },
     maintainAspectRatio: false,
     elements: {
       line: {
@@ -82,19 +87,12 @@ export class QuoteComponent implements OnInit {
       this.router.navigate(['/quote/'  + this.symbol]);
     }
 
-    let url = 'https://app.kpnc.io/trader/retriever/quotes/' + this.symbol;
+    let url = 'https://app.kpnc.io/trader/retriever/quote/' + this.symbol;
 
-    this.external.getRequest(['', '', ''], 0, url).subscribe((response) => {
+    this.external.getRequest(url).subscribe((response) => {
       this.quotes = response;
 
-      this.quotes.data.forEach((quote: any) => {
-        this.chartdata.datasets[0].data.push(quote.price);
-      });
-
-      const last = this.chartdata.datasets[0].data[this.chartdata.datasets[0].data.length - 1];
-      while (this.chartdata.datasets[0].data.length < 1351) {
-        this.chartdata.datasets[0].data.push(last);
-      }
+      this.timeFrame('day');
     });
   }
 
@@ -129,10 +127,14 @@ export class QuoteComponent implements OnInit {
     this.chart?.update();
   }
 
-  date(json: string): string {
+  date(json: string, full: boolean): string {
     let date = new Date(json);
 
-    return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+    if (full) {
+      return `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+    } else {
+      return `${date.getMonth()}/${date.getDate()}/${date.getFullYear() % 100}`;
+    }
   }
 
   time(json: string): string {
@@ -155,8 +157,16 @@ export class QuoteComponent implements OnInit {
     return `${hours}:${String(minutes).padStart(2, '0')} ${meridiem} EST`;
   }
 
-  zero(json: number, fix: number): any {
-    return json.toFixed(fix);
+  millions(cap: number): string {
+    return Math.floor(cap / 1000000).toLocaleString("en-US");
+  }
+
+  zero(json: number | null, fix: number): any {
+    if (json == null) {
+      return this.zero(0, fix);
+    } else {
+      return json.toFixed(fix);
+    }
   }
 
   timeFrame(time?: string): void {
@@ -296,6 +306,18 @@ export class QuoteComponent implements OnInit {
       default:
         this.timeFrame('day');
         break;
+    }
+
+    this.chartdata.datasets[0].data = [];
+
+    let last = this.quotes.data[0].price;
+    for (let i = 0; i < this.chartdata.labels?.length!; i++) {
+      if (this.quotes.data[i] != null) {
+        this.chartdata.datasets[0].data.push(this.quotes.data[i].price);
+        last = this.quotes.data[i].price;
+      } else {
+        this.chartdata.datasets[0].data.push(last);
+      }
     }
 
     this.chart?.update();

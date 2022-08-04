@@ -1,20 +1,26 @@
-<h1 class="nosel">Exchange</h1>
+<h1 class="nosel">
+  <img
+    src="https://content.kpnc.io/img/kpnc/symbol/NASDAQ.webp"
+    alt="NASDAQ"
+  />
+</h1>
 
 <main class="nosel">
   <div class="container">
     <h2>Latest quotes for the NDX (NASDAQ-100):</h2>
+    <h3 *ngIf="symbols.length > 0">⤷ {{nasdaq.length}} Symbols...</h3>
     <app-loader *ngIf="symbols.length == 0"></app-loader>
+    <div class="more" *ngIf="symbols.length > 0">
+      <input #query (keyup)="search(query.value.toLowerCase())" type="text" placeholder="Search..."><br>
+      <small><a href="https://iexcloud.io/">Data provided by IEX Cloud</a></small>
+    </div>
     <table *ngIf="symbols.length > 0">
-      <h4>⤷ {{nasdaq.length}} Symbols</h4>
       <tr *ngFor="let symbol of symbols">
         <app-symbol [symbol]="symbol"></app-symbol>
       </tr>
     </table>
-    <div class="more" *ngIf="!nomore">
+    <div class="more" *ngIf="!nomore && symbols.length > 0">
       <button (click)="more()">Load More</button>
-    </div>
-    <div *ngIf="trigger">
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     </div>
   </div>
 </main>

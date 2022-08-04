@@ -1,7 +1,5 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ExternalService } from 'src/app/services/external.service';
-import { ChartConfiguration, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import { Component, Input, OnInit } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -11,59 +9,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./symbol.component.scss']
 })
 export class SymbolComponent implements OnInit {
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   width: number | undefined;
   @Input() symbol!: string;
   resize!: Subscription;
+  up: boolean = false;
+  data: number[] = [];
+  options: any;
   quotes: any;
-
-  chartdata: ChartConfiguration['data'] = {
-    datasets: [
-      {
-        // stepped: 'after',
-        fill: 'origin',
-        pointRadius: 0,
-        borderWidth: 1,
-        pointHoverRadius: 0,
-        borderColor: 'rgb(255, 255, 255)',
-        backgroundColor: 'rgba(255, 255, 255, 0)',
-        data: []
-      }
-    ],
-    labels: [
-      '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-      ''
-    ]
-  };
-
-  chartoptions: ChartConfiguration['options'] = {
-    animation: false,
-    maintainAspectRatio: false,
-    elements: {
-      line: {
-        tension: 0.25
-      }
-    }, scales: {
-      x: {
-        reverse: true,
-        ticks: { color: 'rgba(255, 255, 255, 0)' },
-        grid: { color: 'rgba(255, 255, 255, 0)' },
-      },
-      y: {
-        // beginAtZero: true,
-        ticks: { color: 'rgba(255, 255, 255, 1)' },
-        grid: { color: 'rgba(255, 255, 255, 0)' }
-      }
-    }, plugins: {
-      legend: { display: false }
-    }
-  };
-
-  charttype: ChartType = 'line';
 
   constructor(private router: Router, private external: ExternalService) { }
 
@@ -72,14 +24,71 @@ export class SymbolComponent implements OnInit {
       this.width = window.innerWidth;
     });
 
-    let url = 'https://app.kpnc.io/trader/retriever/quotes/' + this.symbol;
+    let url = 'https://app.kpnc.io/trader/retriever/quote/' + this.symbol;
 
-    this.external.getRequest(['', '', ''], 0, url).subscribe((response) => {
+    this.external.getRequest(url).subscribe((response) => {
       this.quotes = response;
 
       for (let i = 0; i < 76; i++) {
-        this.chartdata.datasets[0].data.push(this.quotes.data[i].price);
+        this.data.push(this.quotes.data[i].price);
       }
+
+      if (this.data[0]! > this.data[75]!) {
+        this.up = true;
+      }
+
+      this.options = {
+        color: !this.up ? '#c2261b' : '#1bc237',
+        animation: false,
+        width: 1,
+        grid: {
+          show: false,
+          height: '100%',
+          width: '100%',
+          bottom: 0,
+          top: 0
+        },
+        xAxis: {
+          inverse: true,
+          data: [
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+            ''
+          ],
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        },
+        yAxis: {
+          show: false,
+          type: 'value',
+          scale: true,
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          }
+        },
+        series: [{
+          name: '',
+          type: 'line',
+          data: this.data,
+          showSymbol: false,
+          lineStyle: {
+            width: 1
+          }
+        }]
+      };
     });
   }
 
@@ -89,14 +98,10 @@ export class SymbolComponent implements OnInit {
 
   onRetrieve() {
     this.width = window.innerWidth;
+  }
 
-    if (this.quotes.data[0].change < 0) {
-      this.chartdata.datasets[0].borderColor = 'rgb(194, 38, 27)';
-    } else {
-      this.chartdata.datasets[0].borderColor = 'rgb(27, 194, 55)';
-    }
-
-    this.chart?.update();
+  millions(cap: number): string {
+    return Math.floor(cap / 1000000).toLocaleString("en-US");
   }
 
   zero(json: number, fix: number) {

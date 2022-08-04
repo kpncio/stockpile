@@ -5,16 +5,10 @@
       <table>
         <tr>
           <td style="width: 20%;">
-            <p><b>{{symbol}}</b>:<br><i [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">{{this.quotes.data[0].name}}</i></p>
+            <p><b>{{symbol}}</b>:<br><i [style.color]="!up ? '#c2261b' : '#1bc237'">{{this.quotes.data[0].name}}</i></p>
           </td>
           <td style="width: 40%;">
-            <div class="chart">
-              <canvas #chartlite baseChart
-                [data]="chartdata"
-                [options]="chartoptions"
-                [type]="charttype">
-              </canvas>
-            </div>
+              <div echarts [options]="options" class="chart"></div>
           </td>
           <td style="width: 40%;">
             <table>
@@ -30,13 +24,13 @@
                 </td>
               </tr>
               <tr>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
-                  {{quotes.data[0].cap.toLocaleString("en-US")}}
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
+                  {{millions(quotes.data[0].cap)}} M
                 </td>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].change, 3)}}
                 </td>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].percent, 5)}}
                 </td>
               </tr>
@@ -53,13 +47,13 @@
                 </td>
               </tr>
               <tr>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].price, 3)}}
                 </td>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].high52, 2)}}
                 </td>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].low52, 2)}}
                 </td>
               </tr>
@@ -73,16 +67,10 @@
       <table>
         <tr>
           <td style="width: 20%;">
-            <p><b>{{symbol}}</b>:<br><i [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">{{this.quotes.data[0].name}}</i></p>
+            <p><b>{{symbol}}</b>:<br><i [style.color]="!up ? '#c2261b' : '#1bc237'">{{this.quotes.data[0].name}}</i></p>
           </td>
           <td style="width: 40%;">
-            <div class="chart">
-              <canvas #chartlite baseChart
-                [data]="chartdata"
-                [options]="chartoptions"
-                [type]="charttype">
-              </canvas>
-            </div>
+            <div echarts [options]="options" class="chart"></div>
           </td>
           <td style="width: 40%;">
             <table>
@@ -95,10 +83,10 @@
                 </td>
               </tr>
               <tr>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
-                  {{quotes.data[0].cap.toLocaleString("en-US")}}
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
+                  {{millions(quotes.data[0].cap)}} M
                 </td>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].percent, 5)}}
                 </td>
               </tr>
@@ -112,10 +100,10 @@
                 </td>
               </tr>
               <tr>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].price, 3)}}
                 </td>
-                <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
+                <td [style.color]="!up ? '#c2261b' : '#1bc237'">
                   {{zero(quotes.data[0].pe, 2)}}
                 </td>
               </tr>
@@ -127,28 +115,26 @@
     <div class="lite" *ngIf="width! < 860">
       <div class="logo" style="background: url('https://content.kpnc.io/img/kpnc/symbol/{{symbol}}.webp') center center / contain no-repeat;"></div>
       <table>
-        <tr style="height: 20px;">
+        <tr style="height: 40px;">
           <table>
-            <td><b>{{symbol}}</b>:</td>
-            <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
-              $ {{quotes.data[0].cap.toLocaleString("en-US")}}
-            </td>
-            <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
-              $ {{zero(quotes.data[0].price, 3)}}
-            </td>
-            <td [style.color]="quotes.data[0].change < 0 ? '#c2261b' : '#1bc237'">
-              {{zero(quotes.data[0].percent, 5)}} %
-            </td>
+            <tr>
+              <td><b>{{symbol}}</b>:</td>
+              <td [style.color]="!up ? '#c2261b' : '#1bc237'">
+                $ {{zero(quotes.data[0].price, 3)}}
+              </td>
+            </tr>
+            <tr>
+              <td [style.color]="!up ? '#c2261b' : '#1bc237'">
+                $ {{millions(quotes.data[0].cap)}} M
+              </td>
+              <td [style.color]="!up ? '#c2261b' : '#1bc237'">
+                {{zero(quotes.data[0].percent, 5)}} %
+              </td>
+            </tr>
           </table>
         </tr>
         <tr style="height: 80px;">
-          <div class="chart">
-            <canvas #chartlite baseChart
-              [data]="chartdata"
-              [options]="chartoptions"
-              [type]="charttype">
-            </canvas>
-          </div>
+          <div echarts [options]="options" class="chart"></div>
         </tr>
       </table>
     </div>

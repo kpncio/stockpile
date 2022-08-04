@@ -5,123 +5,20 @@
 }
 
 /*Header*/
-.full {
+header {
   height: 50px;
-  letter-spacing: 1px;
-  background-color: $dark;
 
-  a {
-    color: $white;
-    text-decoration: none;
-    transform: translateY(13px);
-  }
-
-  a.logo {
-    font-size: 20px;
-    font-weight: bold;
-
-    img {
-      height: 33px;
-      transition: 200ms;
-      transform: translateY(9px);
-      filter: contrast(0) brightness(2);
-
-      &:hover {
-        filter: contrast(1) brightness(1);
-      }
-    }
-  }
-
-  nav {
-    float: right;
+  img {
+    height: 33px;
+    margin: auto;
     display: block;
+    transition: 200ms;
+    transform: translateY(9px);
+    filter: contrast(0) brightness(2);
 
-    ul {
-      margin: 0;
-      display: flex;
-      list-style-type: none;
-
-      li a {
-        display: flex;
-        margin: 0 0.8em;
-        transition: 200ms;
-
-        &:hover {
-          border-bottom: 5px solid $blue;
-        }
-      }
+    &:hover {
+      filter: contrast(1) brightness(1);
     }
   }
 }
 
-.lite {
-  letter-spacing: 2px;
-  padding-bottom: 15px;
-  background-color: $dark;
-
-  a {
-    color: $white;
-    text-decoration: none;
-  }
-
-  a.logo {
-    font-size: 20px;
-    font-weight: bold;
-
-    img {
-      height: 33px;
-      transition: 200ms;
-      transform: translateY(9px);
-      filter: contrast(0) brightness(2);
-
-      &:hover {
-        filter: contrast(1) brightness(1);
-      }
-    }
-  }
-
-  button {
-    float: right;
-    border: none;
-    color: $trans;
-    background-color: $trans;
-    transform: translateY(12px);
-    img {
-      height: 24px;
-      color: $white;
-      font-size: 24px;
-      padding: 0.2em;
-      margin: -0.2em;
-      transition: 200ms;
-      border-radius: 5px;
-      border: 1px solid $white;
-    }
-  }
-
-  nav {
-    ul {
-      display: block;
-      text-align: center;
-      list-style-type: none;
-
-      li {
-        margin: 1em;
-
-        a {
-          transition: 200ms;
-          border-bottom: 0px solid $dark;
-
-          &:hover {
-            border-bottom: 5px solid $blue;
-          }
-        }
-      }
-
-      #first {
-        margin-top: 1em;
-        padding-top: 1em;
-        border-top: 1px solid $white;
-      }
-    }
-  }
-}
