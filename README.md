@@ -1,5 +1,5 @@
 # Trader
 
-*(Cloudflare Workers/KV, IEX Cloud API, Angular SPA, ECharts, Charts.js)*
+*(ASP.NET, BeautifulSoup, Slickcharts, Charts)*
 
-KPNC Technology: Trader: A stock market utility that is comprised of the NASDAQ-100 components...
+KPNC Technology: Trader: A stock market utility that is comprised of the S&P-500, NASDAQ-100, and DOWJONES-30 components...
