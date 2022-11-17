@@ -21,6 +21,10 @@ async function handleScheduled(request, epoch) {
 		return new Promise(r=>setTimeout(r, milliseconds));
 	}
 
+	
+	//NDX:  https://financialmodelingprep.com/api/v3/nasdaq_constituent?apikey=
+	//DJIA: https://financialmodelingprep.com/api/v3/dowjones_constituent?apikey=
+
 	const nasdaq = await fetch(
 		`https://api.nasdaq.com/api/quote/list-type/nasdaq100`, {
 			headers: {
