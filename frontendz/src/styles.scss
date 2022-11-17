@@ -1,0 +1,70 @@
+@import 'colors.scss';
+
+/*Styles*/
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  color: $white;
+  font-size: 18px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: $dark;
+  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
+}
+
+.container {
+  width: 85%;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.nosel {
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/*Components*/
+h1 {
+  margin: 0;
+  padding: 50px;
+  font-size: 36px;
+  text-align: center;
+  letter-spacing: 10px;
+  background: linear-gradient(165deg, $turquoise 0%, $magenta 100%);
+
+  img {
+    margin: auto;
+    height: 150px;
+  }
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  margin: 0;
+  color: $mid;
+  font-size: 16px;
+  transform: translateY(-20px);
+
+  a {
+    color: $mid;
+    transition: 200ms;
+    text-decoration: none;
+
+    &:hover {
+      color: $blue;
+    }
+  }
+}
+
+main {
+  width: 100%;
+  background-color: $dark;
+}
