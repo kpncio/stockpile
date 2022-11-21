@@ -35,6 +35,7 @@ e2e/*.map
 
 ### Node ###
 # Logs
+logs/
 logs
 *.log
 npm-debug.log*
