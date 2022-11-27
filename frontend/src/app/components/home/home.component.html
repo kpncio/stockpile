@@ -7,27 +7,55 @@
 
 <main class="nosel">
   <div class="container">
-    <h2>Browse indexes:</h2>
-    <h3>⤷ 6 markets loaded...</h3>
-    <table>
-      <tr>
-        <h2 (click)="routerLink(['/index/spx'])">S&P 500: <span class="down">3,958.79</span></h2>
-      </tr>
-      <tr>
-        <h2 (click)="routerLink(['/index/ndx'])">Nasdaq 100: <span class="down">11,699.09</span></h2>
-      </tr>
-      <tr>
-        <h2 (click)="routerLink(['/index/djia'])">Dow Jones: <span class="down">33,553.83</span></h2>
-      </tr>
-      <tr>
-        <h2 (click)="routerLink(['/index/forex'])">Forex: <span class="down">106.35</span></h2>
-      </tr>
-      <tr>
-        <h2 (click)="routerLink(['/index/crypto'])">Crypto: <span class="up">16,579.20</span></h2>
-      </tr>
-      <tr>
-        <h2 (click)="routerLink(['/index/metals'])">Metals: <span class="down">1,770.55</span></h2>
-      </tr>
-    </table>
+    <h2>Browse indices:</h2>
+    <h3>⤷ 8 indices loaded...</h3>
+    <div class="row">
+      <div class="column">
+        <div class="cell" (click)="routerLink(['/index/spx'])">
+          <h2>S&P 500</h2>
+          <small class="down">4,026.12<br>(▼ 0.03%)</small>
+        </div>
+
+        <div class="cell" (click)="routerLink(['/index/ndx'])">
+          <h2>Nasdaq 100</h2>
+          <small class="down">11,756.00<br>(▼ 0.7%)</small>
+        </div>
+      </div>
+      <div class="column">
+        <div class="cell" (click)="routerLink(['/index/djia'])">
+          <h2>Dow Jones</h2>
+          <small class="up">34,347.00<br>(▲ 0.45%)</small>
+        </div>
+
+        <div class="cell" (click)="routerLink(['/index/forex'])">
+          <h2>Forex</h2>
+          <small class="up">106.063<br>(▲ 0.179%)</small>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="cell" (click)="routerLink(['/index/crypto'])">
+          <h2>Crypto</h2>
+          <small class="down">16,568.80<br>(▼ 0.38%)</small>
+        </div>
+
+        <div class="cell" (click)="routerLink(['/index/metals'])">
+          <h2>Metals</h2>
+          <small class="up">1,754.00<br>(▲ 0.48%)</small>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="cell" (click)="routerLink(['/index/energy'])">
+          <h2>Energy</h2>
+          <small class="down">83.63<br>(▼ 2.084%)</small>
+        </div>
+
+        <div class="cell" (click)="routerLink(['/index/portfolio'])">
+          <h2>Portfolio</h2>
+          <small class="up">11,928.70<br>(▲ 19.29%)</small>
+        </div>
+      </div>
+    </div>
   </div>
 </main>

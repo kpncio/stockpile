@@ -7,24 +7,22 @@ h1 {
   }
 }
 
-table {
-  width: 100%;
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
 
-  .up {
-    color: $green;
-  }
+.column {
+  flex: 23%;
+  max-width: 23%;
+  margin: 0 1% 0 1%;
 
-  .down {
-    color: $red;
-  }
+  .cell {
+    text-align: center;
+    margin-bottom: 10px;
+    padding-bottom: 0.83em;
+    vertical-align: middle;
 
-  span {
-    float: right;
-  }
-
-  h2 {
-    margin: 10px;
-    padding: 25px;
     border-radius: 10px;
     letter-spacing: normal;
     border: 1px $light solid;
@@ -66,6 +64,30 @@ table {
       border-radius: 10px;
       background: #1E1E1E;
     }
+
+    .up {
+      color: $green;
+      // animation: glowgreen 1s ease-in-out infinite alternate;
+    }
+
+    .down {
+      color: $red;
+      // animation: glowred 1s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .column {
+    flex: 48%;
+    max-width: 48%;
+  }
+}
+
+@media (max-width: 600px) {
+  .column {
+    flex: 98%;
+    max-width: 98%;
   }
 }
 
@@ -73,4 +95,24 @@ table {
   0% { background-position: 0 0; }
   50% { background-position: 400% 0; }
   100% { background-position: 0 0; }
+}
+
+@keyframes glowgreen {
+  from {
+    text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px $green, 0 0 16px $green, 0 0 20px $green, 0 0 24px $green, 0 0 28px $green;
+  }
+
+  to {
+    text-shadow: 0 0 8px #fff, 0 0 12px $green, 0 0 16px $green, 0 0 20px $green, 0 0 24px $green, 0 0 28px $green, 0 0 32px $green;
+  }
+}
+
+@keyframes glowred {
+  from {
+    text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px $red, 0 0 16px $red, 0 0 20px $red, 0 0 24px $red, 0 0 28px $red;
+  }
+
+  to {
+    text-shadow: 0 0 8px #fff, 0 0 12px $red, 0 0 16px $red, 0 0 20px $red, 0 0 24px $red, 0 0 28px $red, 0 0 32px $red;
+  }
 }
