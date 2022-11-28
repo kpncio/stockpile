@@ -1,4 +1,4 @@
-# Expects: Cron "*/30 * * * *" and Cron "0 9 * * *":
+# Expects: Cron "*/30 * * * *":
 # https://app.kpnc.io/trader/scrape/
 
 from bs4 import BeautifulSoup as beautiful
@@ -17,7 +17,7 @@ load_dotenv()
 
 tiingo = {
     'Content-Type': 'application/json',
-    'Authorization' : 'Token ' + os.getenv('tiingo_api')
+    'Authorization': 'Token ' + os.getenv('tiingo_api')
 }
 
 yahoo = {
@@ -347,8 +347,6 @@ def get_yahoo_intra_prices():
                 'percent': round(percent, 3), 'dividend': 0.0, 'split': 1.0
             }
 
-        prices = dict(reversed(list(prices.items())))
-
         requests.request('PUT', url, json=[{ 'base64': False, 'key': symbol, 'value': json.dumps(prices) }], headers=cloudflare)
         cursor.execute('CREATE TABLE IF NOT EXISTS `data` (`symbol` VARCHAR(10) NOT NULL , `preview` JSON NULL , `daily` JSON NULL , `intra` JSON NULL , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
         cursor.execute(f"""INSERT INTO `data` (`symbol`, `intra`) VALUES ('{symbol}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `intra`='{json.dumps(prices)}'""", '')
@@ -410,13 +408,10 @@ def get_yahoo_daily_prices():
                 'percent': round(percent, 3), 'dividend': 0.0, 'split': 1.0
             }
 
-        preview = preview[::-1]
-        prices = dict(reversed(list(prices.items())))
-
-        requests.request('PUT', url_preview, json=[{ 'base64': False, 'key': symbol, 'value': json.dumps({'30day': preview[0:30]}) }], headers=cloudflare)
+        requests.request('PUT', url_preview, json=[{ 'base64': False, 'key': symbol, 'value': json.dumps({'30day': preview[-30:]}) }], headers=cloudflare)
         requests.request('PUT', url_daily, json=[{ 'base64': False, 'key': symbol, 'value': json.dumps(prices) }], headers=cloudflare)
         cursor.execute('CREATE TABLE IF NOT EXISTS `data` (`symbol` VARCHAR(10) NOT NULL , `preview` JSON NULL , `daily` JSON NULL , `intra` JSON NULL , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
-        cursor.execute(f"""INSERT INTO `data` (`symbol`, `preview`, `daily`) VALUES ('{symbol}', '{json.dumps({'30day': preview[0:30]})}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `preview`='{json.dumps(preview[0:30])}', `daily`='{json.dumps(prices)}'""", '')
+        cursor.execute(f"""INSERT INTO `data` (`symbol`, `preview`, `daily`) VALUES ('{symbol}', '{json.dumps({'30day': preview[-30:]})}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `preview`='{json.dumps(preview[-30:])}', `daily`='{json.dumps(prices)}'""", '')
 
         completed += 1
         log(f'(Processing {completed}/{len(symbols)})', False)
@@ -480,10 +475,13 @@ def get_investing_prices():
 
     log('Uploading to Cloudflare and MySQL...')
 
-    requests.request('PUT', url_preview, json=[{ 'base64': False, 'key': 'LICO-F', 'value': json.dumps({'30day': preview[0:30]}) }], headers=cloudflare)
+    preview = preview[::-1]
+    prices = dict(reversed(list(prices.items())))
+
+    requests.request('PUT', url_preview, json=[{ 'base64': False, 'key': 'LICO-F', 'value': json.dumps({'30day': preview[-30:]}) }], headers=cloudflare)
     requests.request('PUT', url_daily, json=[{ 'base64': False, 'key': 'LICO-F', 'value': json.dumps(prices) }], headers=cloudflare)
     cursor.execute('CREATE TABLE IF NOT EXISTS `data` (`symbol` VARCHAR(10) NOT NULL , `preview` JSON NULL , `daily` JSON NULL , `intra` JSON NULL , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
-    cursor.execute(f"""INSERT INTO `data` (`symbol`, `preview`, `daily`) VALUES ('LICO-F', '{json.dumps({'30day': preview[0:30]})}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `preview`='{json.dumps(preview[0:30])}', `daily`='{json.dumps(prices)}'""", '')
+    cursor.execute(f"""INSERT INTO `data` (`symbol`, `preview`, `daily`) VALUES ('LICO-F', '{json.dumps({'30day': preview[-30:]})}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `preview`='{json.dumps(preview[-30:])}', `daily`='{json.dumps(prices)}'""", '')
 
     log('Closing connections...')
 

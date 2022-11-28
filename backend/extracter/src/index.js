@@ -1,5 +1,5 @@
-// Expects: Cron */30 * * * *:
-// https://app.kpnc.io/trader/extractor/
+// Expects: Cron */10 * * * *:
+// https://app.kpnc.io/trader/extract/
 
 async function handleScheduled(request, epoch) {
 	let date = new Date(epoch);
@@ -21,7 +21,6 @@ async function handleScheduled(request, epoch) {
 		return new Promise(r=>setTimeout(r, milliseconds));
 	}
 
-	
 	//NDX:  https://financialmodelingprep.com/api/v3/nasdaq_constituent?apikey=
 	//DJIA: https://financialmodelingprep.com/api/v3/dowjones_constituent?apikey=
 
@@ -134,10 +133,14 @@ async function handleScheduled(request, epoch) {
 	return new Response('Success... ' + JSON.stringify(quotes), {
 		headers: { 'content-type': 'text/plain', 'status' : 200 }
 	})
+
+	return new Response('Success...', {
+		headers: { 'content-type': 'text/plain', 'status' : 200 }
+	})
 }
 
 addEventListener('scheduled', event => {
-	let epoch = Date.now() - 14400000;
+	let epoch = Date.now();
 
-	event.waitUntil(handleScheduled(event, epoch));
+	event.waitUntil(handleScheduled(event.request, epoch));
 })

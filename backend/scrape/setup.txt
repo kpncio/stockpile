@@ -3,7 +3,7 @@ Dependecies:
 
 Services:
     Tiingo API
-    Cloudflare Pages, Workers, KV
+    Cloudflare Workers, KV
     MySQL/MariaDB Server
 
 Environment:

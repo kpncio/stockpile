@@ -1,13 +1,12 @@
-name = "extract"
-main = "index.js"
+name = "trader-extract"
+main = "src/index.js"
 compatibility_date = "2022-11-27"
-usage_model = "unbound"
 
 [triggers]
-crons = ["*/5 * * * *"]
+crons = ["*/10 * * * *"]
 
 [[kv_namespaces]]
-  binding = "kv_index"
+  binding = "kv_indexes"
   id = "2a66f4a383324c5395ee2cfde09d3210"
   preview_id = "2a66f4a383324c5395ee2cfde09d3210"
 
@@ -25,5 +24,3 @@ crons = ["*/5 * * * *"]
   binding = "kv_preview"
   id = "5aa629204810410fa982ef21dd751467"
   preview_id = "5aa629204810410fa982ef21dd751467"
-
-# 'TIINGO_API' is a wrangler secret for the Tiingo API key...
