@@ -1,19 +1,20 @@
-// Expects: Cron */5 * * * *:
+// Expects: Cron */30 * * * *:
 // https://app.kpnc.io/trader/extract/
 
-let logged = []
+let logged = [];
+let date;
 
-function logger(text) {
+async function logger(text) {
   if (text[0] == '[') {
     console.log(text);
   } else {
     console.log(`   ${text}`);
   }
 
-  logged.push(text)
+  logged.push(text);
 
   if (text == 'END') {
-    
+    await kv_log.put(`trader:extract:${date.getTime()}`, JSON.stringify(logged));
   }
 }
 
@@ -28,11 +29,14 @@ function daysago(days, date) {
 }
 
 async function handleScheduled(event, epoch = 0) {
-  let date = (epoch != 0) ? new Date(epoch) : new Date(event.scheduledTime);
+  date = (epoch != 0) ? new Date(epoch) : new Date(event.scheduledTime);
   let minutes = (date.getHours() * 60) + date.getMinutes();
   logger(`[UTC Timestamp]: ${date}`);
 
 	if (date.getDay() == 0 || date.getDay() == 6) { // Business Days
+    logger('[Markets are closed today...]')
+
+    logger('END')
 		return new Response('Markets are closed today...', {
 			headers: { 'content-type': 'text/plain', 'status' : 200 }
 		})
@@ -191,6 +195,7 @@ async function handleScheduled(event, epoch = 0) {
 
     logger('[Tiingo Prices (Daily): Finished]');
 
+    logger('END')
 		return new Response('Daily/preview data extracted...', {
 			headers: { 'content-type': 'text/plain', 'status' : 200 }
 		})
@@ -342,11 +347,15 @@ async function handleScheduled(event, epoch = 0) {
 
     logger('[Tiingo Prices (Intra): Finished]');
 
+    logger('END')
 		return new Response('Intraday data extracted...', {
 			headers: { 'content-type': 'text/plain', 'status' : 200 }
 		})
 	}
-
+  
+  logger('[Markets are closed right now]')
+  
+  logger('END')
   return new Response('Markets are closed right now...', {
     headers: { 'content-type': 'text/plain', 'status' : 200 }
   })
@@ -356,7 +365,7 @@ addEventListener('scheduled', event => {
 	event.waitUntil(handleScheduled(event));
 });
 
-addEventListener('fetch', event => {
-  let epoch = Date.now();
-	event.waitUntil(handleScheduled(event, epoch));
-});
+// addEventListener('fetch', event => {
+//   let epoch = Date.now();
+// 	event.waitUntil(handleScheduled(event, epoch));
+// });

@@ -1,10 +1,15 @@
 name = "extract"
 main = "index.js"
-compatibility_date = "2022-11-27"
+compatibility_date = "2022-11-11"
 usage_model = "unbound"
 
-[triggers]
-crons = ["*/5 * * * *"]
+# [triggers]
+# crons = ["*/30 * * * *"]
+
+[[kv_namespaces]]
+  binding = "kv_log"
+  id = "001962873af84b198162d5d8ec5d95fb"
+  preview_id = "001962873af84b198162d5d8ec5d95fb"
 
 [[kv_namespaces]]
   binding = "kv_index"

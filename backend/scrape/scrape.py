@@ -46,12 +46,18 @@ cloudflare = {
 
 completed = 0
 
+epoch = round(time.time())
+
 def log(t, s=True):
     if s:
         if t[0] != '[':
             print('   ' + t)
         else:
             print(t)
+
+    file = open(f'logs/{epoch}.log', 'a')
+    file.write(t + '\n')
+    file.close()
 
 def strip(p, v=None):
     if v == None:
