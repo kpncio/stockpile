@@ -21,21 +21,8 @@ tiingo = {
 }
 
 yahoo = {
-    'Host': 'query1.finance.yahoo.com',
-    'Cookie': 'A3=d=AQABBHNlc2MCEEiIspii3tIW0A2t9eA_WNcFEgEBAQG2dGN9YwAAAAAA_eMAAA&S=AQAAAtxYkVM2lsqWXS6cPWIQw8M',
-    'Sec-Ch-Ua': '"Chromium";v="107", "Not=A?Brand";v="24"',
-    'Sec-Ch-Ua-Mobile': '?0',
-    'Sec-Ch-Ua-Platform': '"Windows"',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.5304.107 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'Sec-Fetch-Site': 'none',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-User': '?1',
-    'Sec-Fetch-Dest': 'document',
-    'Accept-Encoding': 'gzip, deflate',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/605.0 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/605.0'
 }
 
 cloudflare = {
@@ -48,7 +35,7 @@ completed = 0
 
 epoch = round(time.time())
 
-def log(t, s=True):
+def log(t, s = True):
     if s:
         if t[0] != '[':
             print('   ' + t)
@@ -59,7 +46,15 @@ def log(t, s=True):
     file.write(t + '\n')
     file.close()
 
-def strip(p, v=None):
+def logger_end():
+    logged = []
+    with open(f'logs/{epoch}.log', 'r') as file:
+        while (line := file.readline()):
+            logged.append(line)
+    url = f"https://api.cloudflare.com/client/v4/accounts/{os.getenv('cf_account')}/storage/kv/namespaces/{os.getenv('cf_kv_log')}/bulk"
+    requests.request('PUT', url, json = [{ 'base64': False, 'key': 'trader:scrape:' + epoch, 'value': json.dumps(logged) }], headers = cloudflare)
+
+def strip(p, v = None):
     if v == None:
         symbols = []
         for each in p:
@@ -210,7 +205,7 @@ def get_index_contituents():
 
         log(f'Uploading {each}...')
 
-        requests.request('PUT', url, json=[{ 'base64': False, 'key': each, 'value': json.dumps(rows) }], headers=cloudflare)
+        requests.request('PUT', url, json = [{ 'base64': False, 'key': each, 'value': json.dumps(rows) }], headers = cloudflare)
         cursor.execute(f'CREATE TABLE IF NOT EXISTS `index_{each.lower()}` (`rank` INT(4) NOT NULL , `symbol` VARCHAR(10) NOT NULL , `name` VARCHAR(100) NOT NULL , `weight` FLOAT NOT NULL , INDEX (`rank`) , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
         cursor.execute(f'DELETE FROM `index_{each.lower()}`;', '')
         cursor.executemany(f'INSERT INTO `index_{each.lower()}` (`rank`, `symbol`, `name`, `weight`) VALUES (%s, %s, %s, %s)', table)
@@ -275,7 +270,7 @@ def get_index_prices():
 
     log('Uploading to Cloudflare and MySQL...')
 
-    requests.request('PUT', url, json=[{ 'base64': False, 'key': 'ROOT', 'value': json.dumps({
+    requests.request('PUT', url, json = [{ 'base64': False, 'key': 'ROOT', 'value': json.dumps({
         'SPX': {'price': indices[0][1], 'change': indices[0][2], 'percent': indices[0][3]},
         'NDX': {'price': indices[1][1], 'change': indices[1][2], 'percent': indices[1][3]},
         'DJIA': {'price': indices[2][1], 'change': indices[2][2], 'percent': indices[2][3]},
@@ -284,7 +279,7 @@ def get_index_prices():
         'METALS': {'price': gold_price, 'change': gold_change, 'percent': gold_percent},
         'ENERGY': {'price': oil_price, 'change': oil_change, 'percent': oil_percent},
         'PORTFOLIO': {'price': portfolio_price, 'change': portfolio_change, 'percent': portfolio_percent}
-    }) }], headers=cloudflare)
+    }) }], headers = cloudflare)
 
     cursor.execute('CREATE TABLE IF NOT EXISTS `index` (`symbol` VARCHAR(10) NOT NULL , `value` FLOAT NOT NULL , `change` FLOAT NOT NULL , `percent` FLOAT NOT NULL , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
     cursor.execute('DELETE FROM `index`;', '')
@@ -353,7 +348,7 @@ def get_yahoo_intra_prices():
                 'percent': round(percent, 3), 'dividend': 0.0, 'split': 1.0
             }
 
-        requests.request('PUT', url, json=[{ 'base64': False, 'key': symbol, 'value': json.dumps(prices) }], headers=cloudflare)
+        requests.request('PUT', url, json = [{ 'base64': False, 'key': symbol, 'value': json.dumps(prices) }], headers = cloudflare)
         cursor.execute('CREATE TABLE IF NOT EXISTS `data` (`symbol` VARCHAR(10) NOT NULL , `preview` JSON NULL , `daily` JSON NULL , `intra` JSON NULL , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
         cursor.execute(f"""INSERT INTO `data` (`symbol`, `intra`) VALUES ('{symbol}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `intra`='{json.dumps(prices)}'""", '')
 
@@ -414,8 +409,8 @@ def get_yahoo_daily_prices():
                 'percent': round(percent, 3), 'dividend': 0.0, 'split': 1.0
             }
 
-        requests.request('PUT', url_preview, json=[{ 'base64': False, 'key': symbol, 'value': json.dumps({'30day': preview[-30:]}) }], headers=cloudflare)
-        requests.request('PUT', url_daily, json=[{ 'base64': False, 'key': symbol, 'value': json.dumps(prices) }], headers=cloudflare)
+        requests.request('PUT', url_preview, json = [{ 'base64': False, 'key': symbol, 'value': json.dumps({'30day': preview[-30:]}) }], headers = cloudflare)
+        requests.request('PUT', url_daily, json = [{ 'base64': False, 'key': symbol, 'value': json.dumps(prices) }], headers = cloudflare)
         cursor.execute('CREATE TABLE IF NOT EXISTS `data` (`symbol` VARCHAR(10) NOT NULL , `preview` JSON NULL , `daily` JSON NULL , `intra` JSON NULL , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
         cursor.execute(f"""INSERT INTO `data` (`symbol`, `preview`, `daily`) VALUES ('{symbol}', '{json.dumps({'30day': preview[-30:]})}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `preview`='{json.dumps(preview[-30:])}', `daily`='{json.dumps(prices)}'""", '')
 
@@ -484,8 +479,8 @@ def get_investing_prices():
     preview = preview[::-1]
     prices = dict(reversed(list(prices.items())))
 
-    requests.request('PUT', url_preview, json=[{ 'base64': False, 'key': 'LICO-F', 'value': json.dumps({'30day': preview[-30:]}) }], headers=cloudflare)
-    requests.request('PUT', url_daily, json=[{ 'base64': False, 'key': 'LICO-F', 'value': json.dumps(prices) }], headers=cloudflare)
+    requests.request('PUT', url_preview, json = [{ 'base64': False, 'key': 'LICO-F', 'value': json.dumps({'30day': preview[-30:]}) }], headers = cloudflare)
+    requests.request('PUT', url_daily, json = [{ 'base64': False, 'key': 'LICO-F', 'value': json.dumps(prices) }], headers = cloudflare)
     cursor.execute('CREATE TABLE IF NOT EXISTS `data` (`symbol` VARCHAR(10) NOT NULL , `preview` JSON NULL , `daily` JSON NULL , `intra` JSON NULL , UNIQUE (`symbol`)) ENGINE = InnoDB;', '')
     cursor.execute(f"""INSERT INTO `data` (`symbol`, `preview`, `daily`) VALUES ('LICO-F', '{json.dumps({'30day': preview[-30:]})}', '{json.dumps(prices)}') ON DUPLICATE KEY UPDATE `preview`='{json.dumps(preview[-30:])}', `daily`='{json.dumps(prices)}'""", '')
 
@@ -693,14 +688,14 @@ def get_metadata_fill():
 
     log('Uploading to Cloudflare and MySQL...')
 
-    requests.request('PUT', url, json=values_cf, headers=cloudflare)
+    requests.request('PUT', url, json = values_cf, headers = cloudflare)
     cursor.execute('CREATE TABLE IF NOT EXISTS `metadata` (`symbol` VARCHAR(10) NOT NULL , `company` VARCHAR(100) NOT NULL , `description` TEXT NOT NULL , `exchange` VARCHAR(100) NOT NULL , `index` VARCHAR(10) NOT NULL , `joined` DATE NOT NULL , `access` INT(2) NOT NULL , INDEX (`index`), UNIQUE (`symbol`), UNIQUE (`company`)) ENGINE = InnoDB;', '')
     cursor.execute('DELETE FROM `metadata`;', '')
     cursor.executemany('INSERT INTO `metadata` (`symbol`, `company`, `description`, `exchange`, `index`, `joined`, `access`) VALUES (%s, %s, %s, %s, %s, %s, %s)', values_db)
 
     url = f"https://api.cloudflare.com/client/v4/accounts/{os.getenv('cf_account')}/storage/kv/namespaces/{os.getenv('cf_kv_index')}/bulk"
-    requests.request('PUT', url, json=[{ 'base64': False, 'key': 'RETRIEVE', 'value': json.dumps(values_rt) }], headers=cloudflare)
-    requests.request('PUT', url, json=[{ 'base64': False, 'key': 'SEARCH', 'value': json.dumps(values_sr) }], headers=cloudflare)
+    requests.request('PUT', url, json = [{ 'base64': False, 'key': 'RETRIEVE', 'value': json.dumps(values_rt) }], headers = cloudflare)
+    requests.request('PUT', url, json = [{ 'base64': False, 'key': 'SEARCH', 'value': json.dumps(values_sr) }], headers = cloudflare)
 
     log('Closing connections...')
 
@@ -720,3 +715,5 @@ if int(time.strftime('%w')) != 0 and int(time.strftime('%w')) != 6: # Business D
 
 if os.getenv('prime') == 'true': # If prime (.env) is true
     get_metadata_fill()
+
+logger_end()

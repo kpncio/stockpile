@@ -3,8 +3,9 @@ main = "index.js"
 compatibility_date = "2022-11-11"
 usage_model = "unbound"
 
-# [triggers]
-# crons = ["*/30 * * * *"]
+[triggers]
+crons = []
+# crons = ["*/15 * * * *"]
 
 [[kv_namespaces]]
   binding = "kv_log"

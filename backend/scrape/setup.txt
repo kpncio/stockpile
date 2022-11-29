@@ -8,6 +8,7 @@ Services:
 
 Environment:
     tiingo_api:         Tiingo API Key              https://api.tiingo.com/documentation/general/connecting
+    cf_kv_meta:         Worker KV for logs          https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_meta:         Worker KV for metadata      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_index:        Worker KV for indices       https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_intra:        Worker KV for intraday      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
