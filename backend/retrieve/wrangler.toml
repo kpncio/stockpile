@@ -1,0 +1,35 @@
+name = "retrieve"
+main = "index.js"
+compatibility_date = "2022-11-11"
+
+[[kv_namespaces]]
+  binding = "kv_log"
+  id = "001962873af84b198162d5d8ec5d95fb"
+  preview_id = "001962873af84b198162d5d8ec5d95fb"
+
+[[kv_namespaces]]
+  binding = "kv_meta"
+  id = "1ee6875848004b3192191879915356e5"
+  preview_id = "1ee6875848004b3192191879915356e5"
+
+[[kv_namespaces]]
+  binding = "kv_index"
+  id = "2a66f4a383324c5395ee2cfde09d3210"
+  preview_id = "2a66f4a383324c5395ee2cfde09d3210"
+
+[[kv_namespaces]]
+  binding = "kv_intra"
+  id = "3a9280a2222443878e94fb3fc952bb72"
+  preview_id = "3a9280a2222443878e94fb3fc952bb72"
+
+[[kv_namespaces]]
+  binding = "kv_daily"
+  id = "4d9686345b864fc993e1721507cb54bf"
+  preview_id = "4d9686345b864fc993e1721507cb54bf"
+
+[[kv_namespaces]]
+  binding = "kv_preview"
+  id = "5aa629204810410fa982ef21dd751467"
+  preview_id = "5aa629204810410fa982ef21dd751467"
+
+# 'TIINGO_API' is a wrangler secret for the Tiingo API key...
