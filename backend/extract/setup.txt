@@ -1,14 +1,13 @@
 Dependecies:
-    pip install bs4 python-dotenv mysql.connector cloudscraper yfinance requests
+    pip install bs4 python-dotenv cloudscraper yfinance requests
 
 Services:
     Tiingo API
-    Cloudflare Workers, KV
-    MySQL/MariaDB Server
+    Cloudflare Workers/KV
 
 Environment:
     tiingo_api:         Tiingo API Key              https://api.tiingo.com/documentation/general/connecting
-    cf_kv_meta:         Worker KV for logs          https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
+    cf_kv_log:          Worker KV for logs          https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_meta:         Worker KV for metadata      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_index:        Worker KV for indices       https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_intra:        Worker KV for intraday      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
@@ -17,18 +16,13 @@ Environment:
     cf_email:           Cloudflare Account Email    https://developers.cloudflare.com/fundamentals/account-and-billing/account-setup/verify-email-address/
     cf_account:         Cloudflare Account ID       https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/
     cf_api_key:         Cloudflare API Key          https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
-    db_name:            Database Name               https://dev.mysql.com/doc/refman/8.0/en/creating-database.html
-    db_host:            Database Host address       https://dev.mysql.com/doc/refman/8.0/en/connecting-disconnecting.html
-    db_port:            Database Port number        https://dev.mysql.com/doc/refman/8.0/en/connecting-disconnecting.html
-    db_user:            Database Username           https://dev.mysql.com/doc/refman/8.0/en/connecting-disconnecting.html
-    db_pass:            Database Password           https://dev.mysql.com/doc/refman/8.0/en/connecting-disconnecting.html
     prime:              Priming mode will backfill all required metadata (makes a lot of requests)...
 
 Automatically Run Every 30min:
     Linux:
         Create cron job:
             crontab -e
-            */30 * * * * python /path/scrape.py
+            */30 * * * * python /path/extract.py
 
         Check cron jobs:
             grep CRON /var/log/syslog
@@ -42,7 +36,7 @@ Automatically Run Every 30min:
             Frequency (Advanced settings > Repeat task every)
 
             Start it (Actions > New...)
-            Link it (Settings > Program/script) *scrape.bat that is included*
+            Link it (Settings > Program/script) *extract.bat that is included*
 
         Check job in 'Event Viewer':
             Navigate to 'Event Viewer (Local) / Applications and Services Logs / Microsoft / Windows / TaskScheduler / Optional'

@@ -1,6 +1,11 @@
 // Expects: https://app.kpnc.io/trader/retrieve/<store>/<key>/:
 // https://app.kpnc.io/trader/retrieve/
 
+addEventListener('fetch', event => {
+  let epoch = Date.now();
+	event.respondWith(handleRequest(event, epoch));
+});
+
 let logged = [];
 let request;
 let date;
@@ -128,8 +133,3 @@ async function handleRequest(event, epoch) {
     })
   }
 }
-
-addEventListener('fetch', event => {
-  let epoch = Date.now();
-	event.respondWith(handleRequest(event, epoch));
-});
