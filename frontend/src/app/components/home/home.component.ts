@@ -8,15 +8,16 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  root: any = {
-    'SPX': {'price': 0, 'change': 0, 'percent': 0},
-    'NDX': {'price': 0, 'change': 0, 'percent': 0},
-    'DJIA': {'price': 0, 'change': 0, 'percent': 0},
-    'FOREX': {'price': 0, 'change': 0, 'percent': 0},
-    'CRYPTO': {'price': 0, 'change': 0, 'percent': 0},
-    'METALS': {'price': 0, 'change': 0, 'percent': 0},
-    'ENERGY': {'price': 0, 'change': 0, 'percent': 0},
-    'PORTFOLIO': {'price': 0, 'change': 0, 'percent': 0}
+  root: any = {};
+  dict: any = {
+    'SPX': 'S&P 500',
+    'NDX': 'Nasdaq 100',
+    'DJIA': 'Dow Jones',
+    'FOREX': 'Forex',
+    'CRYPTO': 'Crypto',
+    'METALS': 'Metals',
+    'ENERGY': 'Energy',
+    'PORTFOLIO': 'Portfolio'
   };
 
   constructor(private router: Router, private ngZone: NgZone, private fetch: FetchService) {}
@@ -26,8 +27,27 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetch.request('https://app.kpnc.io/trader/retrieve/index/root/').subscribe((response) => {
+    interface previewed {
+      [key: string]: {
+        price: any;
+        change: any;
+        percent: any;
+      };
+    }
+
+    this.fetch.request('https://app.kpnc.io/trader/retrieve/index/root').subscribe((response: previewed) => {
       this.root = response;
+
+      for (const [key, value] of Object.entries(response)) {
+        const direction = parseFloat(value['change']) == 0 ? '◆' : parseFloat(value['change']) > 0 ? '▲' : '▼';
+
+        this.root[key] = {
+          'name': this.dict[key],
+          'change': parseFloat(value['change']),
+          'price': (Math.round((parseFloat(value['price']) + Number.EPSILON) * 100) / 100).toLocaleString(),
+          'percent': `(${direction} ${(Math.round((parseFloat(value['percent']) + Number.EPSILON) * 100) / 100).toLocaleString()}%)`
+        };
+      }
     });
   }
 }

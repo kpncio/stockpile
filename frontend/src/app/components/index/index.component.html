@@ -1,1 +1,25 @@
-<p>index works!</p>
+<h1 class="nosel">
+  <img
+    src="https://content.kpnc.io/img/kpnc/symbol/{{ index }}.webp"
+    alt="{{ index }}"
+  />
+</h1>
+
+<main class="nosel">
+  <div class="container">
+    <h2>Components for the {{ index }}:</h2>
+    <h3 *ngIf="symbols.length > 0">⤷ {{symbols.length}} Symbols...</h3>
+    <app-loader *ngIf="symbols.length == 0"></app-loader>
+    <div class="bar" *ngIf="symbols.length > 0">
+      <input #query (keyup)="search(query.value.toLowerCase())" type="text" placeholder="Search..."><br>
+      <small *ngIf="index != 'METALS' && index != 'ENERGY'"><a href="https://api.tiingo.com/">Data provided by Tiingo</a></small>
+      <small *ngIf="index == 'METALS' || index == 'ENERGY'"><a href="https://finance.yahoo.com/">Data provided by Yahoo</a></small>
+    </div>
+    <table infinite-scroll [infiniteScrollDistance]="0" [infiniteScrollThrottle]="500" (scrolled)="load()">
+      <tr *ngFor="let symbol of viewable">
+        <app-symbol [symbol]="symbol"></app-symbol>
+      </tr>
+      <app-loader *ngIf="more"></app-loader>
+    </table>
+  </div>
+</main>

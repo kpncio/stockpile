@@ -1,0 +1,34 @@
+<main (click)="routerLink(['/quote/' + symbol])" *ngIf="done == 2">
+  <table>
+    <td style="width: 35%;">
+      <table>
+        <tr>
+          <span style="font-size: 1.5rem; font-weight: bold;">{{symbol}}</span>
+        </tr>
+        <tr>
+          <span>{{name}}</span>
+        </tr>
+      </table>
+    </td>
+
+    <td style="width: 40%;">
+      <div class="image" style="background: url('https://content.kpnc.io/img/kpnc/symbol/{{symbol}}.webp') center center / contain no-repeat;"></div>
+      <div echarts [options]="options" class="chart"></div>
+    </td>
+
+    <td style="width: calc(25% - 25px);">
+      <table>
+        <tr>
+          <span [ngClass]="{'up': percent > 0, 'down': percent < 0, 'same': percent == 0}">{{price}}</span>
+        </tr>
+        <tr>
+          <span [ngClass]="{'up': percent > 0, 'down': percent < 0, 'same': percent == 0}">{{percent == 0 ? '◆' : percent > 0 ? '▲' : '▼'}} {{percent}}%</span>
+        </tr>
+      </table>
+    </td>
+
+    <td style="width: 25px;">
+      <span>▶</span>
+    </td>
+  </table>
+</main>

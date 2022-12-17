@@ -171,17 +171,24 @@ def get_index_contituents():
 
     log('Scraping indices...')
 
+    'string'
+    12
+    True
+    [1, 2, 3, 4]
+    {'one': 1, 'two': 2}
+
+
     indices = {
         'SPX': parse_indices('https://www.slickcharts.com/sp500'),
         'NDX': parse_indices('https://www.slickcharts.com/nasdaq100'),
         'DJIA': parse_indices('https://www.slickcharts.com/dowjones'),
         'FOREX': [
-            ['1', 'EUR/USD Forex', 'EURUSD', '57.6', '-', '-', '-'],
-            ['2', 'USD/JPY Forex', 'USDJPY', '13.6', '-', '-', '-'],
-            ['3', 'GBP/USD Forex', 'GBPUSD', '11.9', '-', '-', '-'],
-            ['4', 'USD/CAD Forex', 'USDCAD', '9.1', '-', '-', '-'],
-            ['5', 'USD/SERK Forex', 'USDSEK', '4.2', '-', '-', '-'],
-            ['6', 'USD/CHF Forex', 'USDCHF', '3.6', '-', '-', '-']
+            ['1', 'EUR/USD Forex', 'EUR', '57.6', '-', '-', '-'],
+            ['2', 'USD/JPY Forex', 'JPY', '13.6', '-', '-', '-'],
+            ['3', 'GBP/USD Forex', 'GBP', '11.9', '-', '-', '-'],
+            ['4', 'USD/CAD Forex', 'CAD', '9.1', '-', '-', '-'],
+            ['5', 'USD/SERK Forex', 'SEK', '4.2', '-', '-', '-'],
+            ['6', 'USD/CHF Forex', 'CHF', '3.6', '-', '-', '-']
         ],
         'CRYPTO': [
             ['1', 'Bitcoin', 'BTC', '20', '-', '-', '-'],
@@ -251,12 +258,12 @@ def get_index_prices():
 
     indices = parse_index()
 
-    crypto = requests.get('https://api.tiingo.com/tiingo/crypto/prices?tickers=btcusd&startDate=2022-01-01&resampleFreq=1day', headers = tiingo).json()
+    crypto = requests.get(f'https://api.tiingo.com/tiingo/crypto/prices?tickers=btcusd&startDate={daysago(5)}&resampleFreq=1day', headers = tiingo).json()
     btc_price = round(crypto[0]['priceData'][-1]['close'], 2)
     btc_change = round(crypto[0]['priceData'][-2]['close'] - crypto[0]['priceData'][-1]['close'], 2)
     btc_percent = round((crypto[0]['priceData'][-2]['close'] - crypto[0]['priceData'][-1]['close']) / crypto[0]['priceData'][-1]['close'] * 100, 2)
 
-    forex = requests.get('https://api.tiingo.com/tiingo/fx/prices?tickers=eurusd,usdjpy,gbpusd,usdcad,usdsek,usdchf&startDate=2022-01-01&resampleFreq=1day', headers = tiingo).json()
+    forex = requests.get(f'https://api.tiingo.com/tiingo/fx/prices?tickers=eurusd,usdjpy,gbpusd,usdcad,usdsek,usdchf&startDate={daysago(5)}&resampleFreq=1day', headers = tiingo).json()
     usdx = {'eurusd': [], 'usdjpy': [], 'gbpusd': [], 'usdcad': [], 'usdsek': [], 'usdchf': []}
     for each in forex:
         usdx[each['ticker']].append(each['close'])
@@ -517,6 +524,9 @@ def get_tiingo_prices(url, sym, day, opt, srt):
                     'split': round(price[6], 3)
                 }
 
+            for key in prices.keys():
+                preview.append(prices[key]['close'])
+
             previewed.append({'key': main, 'value': json.dumps(preview[-30:])})
             priced.append({'key': main, 'value': json.dumps(prices)})
 
@@ -564,13 +574,13 @@ def get_tiingo_daily():
 
     log('Retrieving forex prices...')
     url = ['https://api.tiingo.com/tiingo/fx/prices?tickers=', '&startDate=', '&resampleFreq=1day']
-    array = kv_get('index', 'RETRIEVE')['FOREX']
+    array = ["EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDSEK", "USDCHF"]
     get_tiingo_prices(url, array, True, 1, start)
 
     log('Retrieving crypto prices...')
     srt = start if start != '1800-01-01' else daysago(12 * 365)
     url = ['https://api.tiingo.com/tiingo/crypto/prices?tickers=', '&startDate=', '&resampleFreq=1day']
-    array = kv_get('index', 'RETRIEVE')['CRYPTO']
+    array = ["BTCUSD", "ETHUSD", "BNBUSD", "XRPUSD", "ADAUSD", "DOGEUSD", "MATICUSD", "DOTUSD", "TRXUSD", "LTCUSD", "AVAXUSD", "ATOMUSD", "XMRUSD", "RVNUSD"]
     get_tiingo_prices(url, array, True, 2, srt)
 
     log(f'New Date: ' + daysago(1))
@@ -593,13 +603,13 @@ def get_tiingo_intra():
     log('Retrieving forex prices...')
     srt = start if start != '1800-01-01' else daysago(30)
     url = ['https://api.tiingo.com/tiingo/fx/prices?tickers=', '&startDate=', '&resampleFreq=5min']
-    array = kv_get('index', 'RETRIEVE')['FOREX']
+    array = ["EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDSEK", "USDCHF"]
     get_tiingo_prices(url, array, False, 1, srt)
 
     log('Retrieving crypto prices...')
     srt = start if start != '1800-01-01' else daysago(15)
     url = ['https://api.tiingo.com/tiingo/crypto/prices?tickers=', '&startDate=', '&resampleFreq=5min']
-    array = kv_get('index', 'RETRIEVE')['CRYPTO']
+    array = ["BTCUSD", "ETHUSD", "BNBUSD", "XRPUSD", "ADAUSD", "DOGEUSD", "MATICUSD", "DOTUSD", "TRXUSD", "LTCUSD", "AVAXUSD", "ATOMUSD", "XMRUSD", "RVNUSD"]
     get_tiingo_prices(url, array, False, 2, srt)
 
     log(f'New Date: ' + daysago(1))
@@ -685,12 +695,12 @@ def get_metadata_fill():
     log('Requesting metadata (forex)...')
 
     predefined = [
-        ['EURUSD', 'EUR/USD Forex', 'The European Central Bank', '[€]: The euro came into existence on 1 January 1999, although it had been a goal of the European Union (EU) and its predecessors since the 1960s. After tough negotiations, the Maastricht Treaty entered into force in 1993 with the goal of creating an economic and monetary union by 1999 for all EU states except the UK and Denmark (even though Denmark has a fixed exchange rate policy with the euro).'],
-        ['USDJPY', 'USD/JPY Forex', 'Bank of Japan', '[¥]: The yen (円) is the official currency of Japan. It is the third-most traded currency in the foreign exchange market, after the United States dollar and the euro. It is also widely used as a third reserve currency after the US dollar and the euro.'],
-        ['GBPUSD', 'GBP/USD Forex', 'The Bank of England', '[£]: Sterling is the currency of the United Kingdom and nine of its associated territories. The pound is the main unit of sterling, and the word "pound" is also used to refer to the British currency generally, often qualified in international contexts as the British pound or the pound sterling. Sterling is the world\'s oldest currency that is still in use and that has been in continuous use since its inception. It is currently the fourth most-traded currency in the foreign exchange market, after the United States dollar, the euro, and the Japanese yen.'],
-        ['USDCAD', 'USD/CAD Forex', 'The Bank of Canada', '[CA$]: In Canada during the period of French colonization, coins were introduced, as well as one of the first examples of paper currency by a western government. During the period of British colonization, additional coinage was introduced, as well as banknotes. The Canadian colonies gradually moved away from the British pound and adopted currencies linked to the United States dollar. With Confederation in 1867, the Canadian dollar was established. By the mid-20th century, the Bank of Canada was the sole issuer of paper currency, and banks ceased to issue banknotes.'],
-        ['USDSEK', 'USD/SEK Forex', 'Swedish Central Bank', '[kr]: The krona is the official currency of Sweden. In English, the currency is sometimes referred to as the Swedish crown, as krona means "crown" in Swedish. The Swedish krona was the ninth-most traded currency in the world by value in April 2016.'],
-        ['USDCHF', 'USD/CHF Forex', 'The Swiss National Bank', '[₣]: The Swiss franc is the currency and legal tender of Switzerland and Liechtenstein. It is also legal tender in the Italian exclave of Campione d\'Italia which is surrounded by Swiss territory. The Swiss National Bank (SNB) issues banknotes and the federal mint Swissmint issues coins.']
+        ['EUR', 'EUR/USD Forex', 'The European Central Bank', '[€]: The euro came into existence on 1 January 1999, although it had been a goal of the European Union (EU) and its predecessors since the 1960s. After tough negotiations, the Maastricht Treaty entered into force in 1993 with the goal of creating an economic and monetary union by 1999 for all EU states except the UK and Denmark (even though Denmark has a fixed exchange rate policy with the euro).'],
+        ['JPY', 'USD/JPY Forex', 'Bank of Japan', '[¥]: The yen (円) is the official currency of Japan. It is the third-most traded currency in the foreign exchange market, after the United States dollar and the euro. It is also widely used as a third reserve currency after the US dollar and the euro.'],
+        ['GBP', 'GBP/USD Forex', 'The Bank of England', '[£]: Sterling is the currency of the United Kingdom and nine of its associated territories. The pound is the main unit of sterling, and the word "pound" is also used to refer to the British currency generally, often qualified in international contexts as the British pound or the pound sterling. Sterling is the world\'s oldest currency that is still in use and that has been in continuous use since its inception. It is currently the fourth most-traded currency in the foreign exchange market, after the United States dollar, the euro, and the Japanese yen.'],
+        ['CAD', 'USD/CAD Forex', 'The Bank of Canada', '[CA$]: In Canada during the period of French colonization, coins were introduced, as well as one of the first examples of paper currency by a western government. During the period of British colonization, additional coinage was introduced, as well as banknotes. The Canadian colonies gradually moved away from the British pound and adopted currencies linked to the United States dollar. With Confederation in 1867, the Canadian dollar was established. By the mid-20th century, the Bank of Canada was the sole issuer of paper currency, and banks ceased to issue banknotes.'],
+        ['SEK', 'USD/SEK Forex', 'Swedish Central Bank', '[kr]: The krona is the official currency of Sweden. In English, the currency is sometimes referred to as the Swedish crown, as krona means "crown" in Swedish. The Swedish krona was the ninth-most traded currency in the world by value in April 2016.'],
+        ['CHF', 'USD/CHF Forex', 'The Swiss National Bank', '[₣]: The Swiss franc is the currency and legal tender of Switzerland and Liechtenstein. It is also legal tender in the Italian exclave of Campione d\'Italia which is surrounded by Swiss territory. The Swiss National Bank (SNB) issues banknotes and the federal mint Swissmint issues coins.']
     ]
 
     retrieve['FOREX'] = strip(predefined)
@@ -709,20 +719,20 @@ def get_metadata_fill():
     log('Requesting metadata (crypto)...')
 
     predefined = [
-        ['BTCUSD', 'Bitcoin', 'Bitcoin was created in 2009 by a person or group of people using the pseudonym Satoshi Nakamoto, the name which appeared on the original 2008 Bitcoin white paper that first described the blockchain system that would serve as the backbone of the entire cryptocurrency market.'],
-        ['ETHUSD', 'Ethereum', 'Ethereum was initially described in late 2013 in a white paper by Vitalik Buterin, a programmer and co-founder of Bitcoin Magazine, that described a way to build decentralized applications.'],
-        ['BNBUSD', 'Binance Coin', 'Binance Coin was created in July 2017 and initially worked on the ethereum blockchain with the token ERC-20 before it became the native currency of Binance\'s own blockchain, the Binance Chain.'],
-        ['XRPUSD', 'Ripple', 'The XRP Ledger first launched in June 2012. Shortly thereafter, they were joined by Chris Larsen, and the group started the Company NewCoin in September 2012 (quickly renamed OpenCoin and now named Ripple). The XRPL founders gifted 80 billion XRP, the platform\'s native currency, to the company.'],
-        ['ADAUSD', 'Cardano', 'Cardano is a public blockchain platform. It is open-source and decentralized, with consensus achieved using proof of stake. It can facilitate peer-to-peer transactions with its internal cryptocurrency, ADA. Cardano\'s development began in 2015, led by Ethereum co-founder Charles Hoskinson.'],
-        ['DOGEUSD', 'Dogecoin', 'The Dogecoin (DOGE) was launched in December 2013 by two software engineers (Jackson Palmer and Billy Markus), who created the payment system as a sarcastic meme coin (a type of cryptocurrency that originated from an online meme or viral image).'],
-        ['MATICUSD', 'Polygon', 'Polygon was created in India in 2017 and was originally called the Matic Network. It was the brainchild of experienced Ethereum developers—Jaynti Kanani, Sandeep Nailwal, and Anurag Arjun, as well as Mihailo Bjelic.'],
-        ['DOTUSD', 'Polkadot', 'Polkadot is the brainchild of Dr. Gavin Wood, who is one of the co-founders of Ethereum and the inventor of the Solidity smart contract language. Dr. Wood started working on his idea to “design a sharded version of Ethereum” in mid-2016 and released the first draft of the Polkadot white paper in Oct.'],
-        ['TRXUSD', 'Tron', 'Tron was established in March 2014 by Justin Sun and since 2017 has been overseen and supervised by the TRON Foundation, a non-profit organization in Singapore, established in the same year. It was originally an Ethereum-based ERC-20 token, which switched its protocol to its own blockchain in 2018.'],
-        ['LTCUSD', 'Litecoin', 'Litecoin is a decentralized peer-to-peer cryptocurrency and open-source software project released under the MIT/X11 license. Inspired by Bitcoin, Litecoin was among the earliest altcoins, starting in October 2011.'],
-        ['AVAXUSD', 'Avalanche', 'Avalanche was first conceptualized and shared on InterPlanetary File System (aka IPFS) in May 2018 by a pseudonymous group of enthusiasts named "Team Rocket." Later it was developed by a dedicated team of researchers from Cornell University.'],
-        ['ATOMUSD', 'Cosmos', 'Cosmos is a network of sovereign blockchains that communicate via IBC, an interoperability protocol modeled after TCP/IP, for secure data and value transfer. The Cosmos Hub, also known as "Gaia," is a proof of stake chain with a native token, ATOM, that serves as a hub for IBC packet routing among blockchains within the Cosmos network. The Cosmos Hub, like the majority of blockchains in the Cosmos network, is secured by the Byzantine Fault-Tolerant (BFT) Proof-of-Stake consensus algorithm, Tendermint.'],
-        ['XMRUSD', 'Monero', 'Monero (XMR) is a decentralized digital currency. Users can trade Monero securely and at a low cost for goods, services, and other cryptocurrencies. The price of Monero rises when demand exceeds supply and falls when supply exceeds demand. Besides this, Monero provides users with the privacy and anonymity of their transactions. Monero is untraceable since every transaction is private.'],
-        ['RVNUSD', 'Ravencoin', 'Ravencoin was launched on the ninth anniversary of the launch of Bitcoin, which was on January 3, 2018. However, the announcement for Ravencoin was made on October 31, 2017. There was no ICO or pre-mine, and no coins were reserved for founders\' or developers\' rewards.']
+        ['BTC', 'Bitcoin', 'Bitcoin was created in 2009 by a person or group of people using the pseudonym Satoshi Nakamoto, the name which appeared on the original 2008 Bitcoin white paper that first described the blockchain system that would serve as the backbone of the entire cryptocurrency market.'],
+        ['ETH', 'Ethereum', 'Ethereum was initially described in late 2013 in a white paper by Vitalik Buterin, a programmer and co-founder of Bitcoin Magazine, that described a way to build decentralized applications.'],
+        ['BNB', 'Binance Coin', 'Binance Coin was created in July 2017 and initially worked on the ethereum blockchain with the token ERC-20 before it became the native currency of Binance\'s own blockchain, the Binance Chain.'],
+        ['XRP', 'Ripple', 'The XRP Ledger first launched in June 2012. Shortly thereafter, they were joined by Chris Larsen, and the group started the Company NewCoin in September 2012 (quickly renamed OpenCoin and now named Ripple). The XRPL founders gifted 80 billion XRP, the platform\'s native currency, to the company.'],
+        ['ADA', 'Cardano', 'Cardano is a public blockchain platform. It is open-source and decentralized, with consensus achieved using proof of stake. It can facilitate peer-to-peer transactions with its internal cryptocurrency, ADA. Cardano\'s development began in 2015, led by Ethereum co-founder Charles Hoskinson.'],
+        ['DOGE', 'Dogecoin', 'The Dogecoin (DOGE) was launched in December 2013 by two software engineers (Jackson Palmer and Billy Markus), who created the payment system as a sarcastic meme coin (a type of cryptocurrency that originated from an online meme or viral image).'],
+        ['MATIC', 'Polygon', 'Polygon was created in India in 2017 and was originally called the Matic Network. It was the brainchild of experienced Ethereum developers—Jaynti Kanani, Sandeep Nailwal, and Anurag Arjun, as well as Mihailo Bjelic.'],
+        ['DOT', 'Polkadot', 'Polkadot is the brainchild of Dr. Gavin Wood, who is one of the co-founders of Ethereum and the inventor of the Solidity smart contract language. Dr. Wood started working on his idea to “design a sharded version of Ethereum” in mid-2016 and released the first draft of the Polkadot white paper in Oct.'],
+        ['TRX', 'Tron', 'Tron was established in March 2014 by Justin Sun and since 2017 has been overseen and supervised by the TRON Foundation, a non-profit organization in Singapore, established in the same year. It was originally an Ethereum-based ERC-20 token, which switched its protocol to its own blockchain in 2018.'],
+        ['LTC', 'Litecoin', 'Litecoin is a decentralized peer-to-peer cryptocurrency and open-source software project released under the MIT/X11 license. Inspired by Bitcoin, Litecoin was among the earliest altcoins, starting in October 2011.'],
+        ['AVAX', 'Avalanche', 'Avalanche was first conceptualized and shared on InterPlanetary File System (aka IPFS) in May 2018 by a pseudonymous group of enthusiasts named "Team Rocket." Later it was developed by a dedicated team of researchers from Cornell University.'],
+        ['ATOM', 'Cosmos', 'Cosmos is a network of sovereign blockchains that communicate via IBC, an interoperability protocol modeled after TCP/IP, for secure data and value transfer. The Cosmos Hub, also known as "Gaia," is a proof of stake chain with a native token, ATOM, that serves as a hub for IBC packet routing among blockchains within the Cosmos network. The Cosmos Hub, like the majority of blockchains in the Cosmos network, is secured by the Byzantine Fault-Tolerant (BFT) Proof-of-Stake consensus algorithm, Tendermint.'],
+        ['XMR', 'Monero', 'Monero (XMR) is a decentralized digital currency. Users can trade Monero securely and at a low cost for goods, services, and other cryptocurrencies. The price of Monero rises when demand exceeds supply and falls when supply exceeds demand. Besides this, Monero provides users with the privacy and anonymity of their transactions. Monero is untraceable since every transaction is private.'],
+        ['RVN', 'Ravencoin', 'Ravencoin was launched on the ninth anniversary of the launch of Bitcoin, which was on January 3, 2018. However, the announcement for Ravencoin was made on October 31, 2017. There was no ICO or pre-mine, and no coins were reserved for founders\' or developers\' rewards.']
     ]
 
     retrieve['CRYPTO'] = strip(predefined)
