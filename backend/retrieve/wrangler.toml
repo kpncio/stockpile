@@ -3,11 +3,6 @@ main = "index.js"
 compatibility_date = "2022-11-11"
 
 [[kv_namespaces]]
-  binding = "kv_log"
-  id = "001962873af84b198162d5d8ec5d95fb"
-  preview_id = "001962873af84b198162d5d8ec5d95fb"
-
-[[kv_namespaces]]
   binding = "kv_meta"
   id = "1ee6875848004b3192191879915356e5"
   preview_id = "1ee6875848004b3192191879915356e5"
@@ -31,5 +26,10 @@ compatibility_date = "2022-11-11"
   binding = "kv_preview"
   id = "5aa629204810410fa982ef21dd751467"
   preview_id = "5aa629204810410fa982ef21dd751467"
+
+[[kv_namespaces]]
+  binding = "kv_extra"
+  id = "61c9abc3a9634ad983831c0e6aee308c"
+  preview_id = "61c9abc3a9634ad983831c0e6aee308c"
 
 # 'TIINGO_API' is a wrangler secret for the Tiingo API key...

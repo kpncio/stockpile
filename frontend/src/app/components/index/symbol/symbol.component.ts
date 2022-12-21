@@ -24,13 +24,13 @@ export class SymbolComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetch.request('https://app.kpnc.io/trader/retrieve/meta/' + this.symbol).subscribe((response) => {
+    this.fetch.request('META', this.symbol).subscribe((response) => {
       this.name = response['name'];
 
       this.done++;
     });
 
-    this.fetch.request('https://app.kpnc.io/trader/retrieve/preview/' + this.symbol).subscribe((response) => {
+    this.fetch.request('PREVIEW', this.symbol).subscribe((response) => {
       this.preview = response;
 
       this.price = (Math.round((this.preview[this.preview.length - 1] + Number.EPSILON) * 1000) / 1000).toLocaleString();

@@ -36,7 +36,7 @@ export class IndexComponent implements OnInit {
       };
     }
 
-    this.fetch.request('https://app.kpnc.io/trader/retrieve/index/' + this.index!).subscribe((response: indexed) => {
+    this.fetch.request('INDEX', this.index!).subscribe((response: indexed) => {
       this.symbols = Object.keys(response);
 
       this.load(this.symbols, true);

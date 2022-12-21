@@ -1,5 +1,5 @@
-<main (click)="routerLink(['/quote/' + symbol])" *ngIf="done == 2">
-  <table>
+<main (click)="routerLink(['/quote/' + symbol])" *ngIf="done == 2" #width>
+  <table *ngIf="width.offsetWidth > 550">
     <td style="width: 35%;">
       <table>
         <tr>
@@ -29,6 +29,27 @@
 
     <td style="width: 25px;">
       <span>▶</span>
+    </td>
+  </table>
+
+  <div id="image" *ngIf="width.offsetWidth <= 550" style="background: url('https://content.kpnc.io/img/kpnc/symbol/{{symbol}}.webp') center center / contain no-repeat;"></div>
+
+  <table *ngIf="width.offsetWidth <= 550">
+    <span style="font-size: 1.5rem; font-weight: bold; line-height: 125px; width: 100px; text-align: center; float: left;">{{symbol}}</span>
+
+    <td style="width: calc(100% - 200px);">
+      <div echarts [options]="options" class="chart"></div>
+    </td>
+
+    <td style="width: 100px;">
+      <table>
+        <tr>
+          <span [ngClass]="{'up': percent > 0, 'down': percent < 0, 'same': percent == 0}">{{price}}</span>
+        </tr>
+        <tr>
+          <span [ngClass]="{'up': percent > 0, 'down': percent < 0, 'same': percent == 0}">{{percent}}%</span>
+        </tr>
+      </table>
     </td>
   </table>
 </main>

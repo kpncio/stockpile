@@ -8,7 +8,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  root: any = {};
+  root: any = {
+    'SPX': {'name': 'S&P 500', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'},
+    'NDX': {'name': 'Nasdaq 100', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'},
+    'DJIA': {'name': 'Dow Jones', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'},
+    'FOREX': {'name': 'Forex', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'},
+    'CRYPTO': {'name': 'Crypto', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'},
+    'METALS': {'name': 'Metals', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'},
+    'ENERGY': {'name': 'Energy', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'},
+    'PORTFOLIO': {'name': 'Portfolio', 'change': 0, 'price': 0, 'percent': '(◆ 0%)'}
+  };
+
   dict: any = {
     'SPX': 'S&P 500',
     'NDX': 'Nasdaq 100',
@@ -35,7 +45,7 @@ export class HomeComponent implements OnInit {
       };
     }
 
-    this.fetch.request('https://app.kpnc.io/trader/retrieve/index/root').subscribe((response: previewed) => {
+    this.fetch.request('INDEX', 'ROOT').subscribe((response: previewed) => {
       this.root = response;
 
       for (const [key, value] of Object.entries(response)) {

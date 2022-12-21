@@ -1,14 +1,148 @@
 <h1 class="nosel">
   <img
-    src="https://content.kpnc.io/img/kpnc/symbol/{{ symbol }}.webp"
-    alt="{{ symbol }}"
+    src="https://content.kpnc.io/img/kpnc/symbol/{{symbol}}.webp"
+    alt="{{symbol}}"
   />
 </h1>
 
 <main class="nosel">
   <div class="container">
-    <h2>Company Name Stuff Inc.</h2>
-    <h3 *ngIf="symbol">⤷ {{ symbol }} is duwp...</h3>
-    <app-loader></app-loader>
+    <div *ngIf="done > 1">
+      <h2>Latest Quote for {{metadata['name']}}:</h2>
+      <small style="display: block; text-align: center; font-size: 10px; color: rgb(86, 86, 86);">*Controls for graph and table:</small>
+      <div style="text-align: center; margin: 5px auto 10px auto;">
+        <a class="control" [ngClass]="{'selected': eod}" (click)="control('daily')" *ngIf="symbol != 'LICO-F'">Daily</a>
+        <a class="control" [ngClass]="{'selected': !eod}" (click)="control('intra')" *ngIf="symbol != 'LICO-F'">Intra</a>
+        <a class="control" [ngClass]="{'selected': type == 'line'}" (click)="control('line')">Line</a>
+        <a class="control" [ngClass]="{'selected': type == 'candle'}" (click)="control('candle')">Candle</a>
+        <a class="control" [ngClass]="{'selected': type == 'bar'}" (click)="control('bar')">Bar</a>
+      </div>
+    </div>
+
+    <div [ngStyle]="{'display': done > 1 ? 'block' : 'none'}">
+      <div style="padding: 10px; border-radius: 10px; border: 1px rgb(86, 86, 86) solid;">
+        <div #chart id="chart">
+          <div #tool id="tool"></div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="done > 1">
+      <br>
+      <h2>Statistics:</h2>
+      <div style="padding: 10px; border-radius: 10px; border: 1px rgb(86, 86, 86) solid;">
+        <div class="stats">
+          <div>Open: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{padded(daily[keys['daily'][0]]['open'], 3)}}
+          </span></div>
+          <div>High: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{padded(daily[keys['daily'][0]]['high'], 3)}}
+          </span></div>
+          <div>Low: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{padded(daily[keys['daily'][0]]['low'], 3)}}
+          </span></div>
+          <div>Close: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{padded(daily[keys['daily'][0]]['close'], 3)}}
+          </span></div>
+          <div>Change: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{padded(daily[keys['daily'][0]]['change'], 3)}}
+          </span></div>
+          <div>Percent: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{padded(daily[keys['daily'][0]]['percent'], 3)}}%
+          </span></div>
+          <div>Volume: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{daily[keys['daily'][0]]['volume'].toLocaleString()}}
+          </span></div>
+          <div *ngIf="extra != null">Market: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+              {{(extra['market'] / 1000000000).toLocaleString()}}B
+          </span></div>
+          <div *ngIf="extra != null">PE Ratio: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+              {{padded(extra['ratio'], 3)}}
+          </span></div>
+          <div *ngIf="extra != null">Year High: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+              {{padded(extra['52high'], 3)}}
+          </span></div>
+          <div *ngIf="extra != null">Year Low: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+              {{padded(extra['52low'], 3)}}
+          </span></div>
+          <div *ngIf="extra != null">YTD Change: <span [ngClass]="{'up': daily[keys['daily'][0]]['change'] >= 0, 'down': daily[keys['daily'][0]]['change'] < 0}">
+            {{padded(extra['ytd'], 3)}}
+          </span></div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="done > 1">
+      <br>
+      <h2>Description:</h2>
+      <div style="padding: 10px; border-radius: 10px; border: 1px rgb(86, 86, 86) solid;">
+        <p style="margin: 0; border-bottom: 1px rgb(86, 86, 86) dashed;">{{metadata['name']}}: Trading as {{symbol}} on {{metadata['exchange']}} (data since {{metadata['date']}}):</p>
+        <br>
+        <p style="margin: 0;">{{metadata['description']}}</p>
+      </div>
+    </div>
+
+    <div *ngIf="done > 1">
+      <br>
+      <h2>Historical Prices:</h2>
+      <div style="padding: 10px 10px 10px 10px; border-radius: 10px; border: 1px rgb(86, 86, 86) solid;">
+        <table #table>
+          <thead>
+            <tr>
+              <th >Date</th>
+              <th *ngIf="!eod">Time</th>
+              <th *ngIf="table.offsetWidth > 580">Open</th>
+              <th *ngIf="table.offsetWidth > 580">High</th>
+              <th *ngIf="table.offsetWidth > 580">Low</th>
+              <th *ngIf="table.offsetWidth > 580">Close</th>
+              <th *ngIf="table.offsetWidth <= 580">Price</th>
+              <th *ngIf="table.offsetWidth > 400">Change</th>
+              <th >Percent</th>
+              <th *ngIf="table.offsetWidth > 750">Volume</th>
+              <th *ngIf="eod && table.offsetWidth > 1000">Dividend</th>
+              <th *ngIf="eod && table.offsetWidth > 1000">Split</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="eod">
+            <tr *ngFor="let row of viewdaily | keyvalue:sorted" [ngClass]="{'up': row['value']['change'] >= 0, 'down': row['value']['change'] < 0}">
+              <td>{{row['key'].split('|')[0]}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['open'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['high'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['low'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth <= 580">{{padded(row['value']['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 400">{{padded(row['value']['change'], 3)}}</td>
+              <td>{{padded(row['value']['percent'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 750">{{row['value']['volume'].toLocaleString()}}</td>
+              <td *ngIf="eod && table.offsetWidth > 1000" [ngClass]="{'highlight': row['value']['dividend'] > 0}">
+                {{padded(row['value']['dividend'], 2)}}
+              </td>
+              <td *ngIf="eod && table.offsetWidth > 1000" [ngClass]="{'highlight': row['value']['split'] > 1}">
+                {{padded(row['value']['split'], 1)}}
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="!eod">
+            <tr *ngFor="let row of viewintra | keyvalue:sorted" [ngClass]="{'up': row['value']['change'] >= 0, 'down': row['value']['change'] < 0}">
+              <td>{{row['key'].split('|')[0]}}</td>
+              <td>{{row['key'].split('|')[1]}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['open'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['high'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['low'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth <= 580">{{padded(row['value']['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 400">{{padded(row['value']['change'], 3)}}</td>
+              <td>{{padded(row['value']['percent'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 750">{{row['value']['volume'].toLocaleString()}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="more" class="more">
+          <button (click)="load()">Load More</button>
+        </div>
+      </div>
+    </div>
+
+    <app-loader *ngIf="done < 2"></app-loader>
   </div>
 </main>

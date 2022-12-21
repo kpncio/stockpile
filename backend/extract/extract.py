@@ -20,6 +20,10 @@ tiingo = {
     'Authorization': 'Token ' + os.getenv('tiingo_api')
 }
 
+iex = {
+    'Content-Type': 'application/json'
+}
+
 yahoo = {
     'Content-Type': 'application/json',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/605.0 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/605.0'
@@ -48,14 +52,6 @@ def log(t, s = True):
     file = open(f'logs/{epoch}.log', 'a')
     file.write(t + '\n')
     file.close()
-
-def logger_end():
-    logged = []
-    with open(f'logs/{epoch}.log', 'r') as file:
-        while (line := file.readline()):
-            logged.append(line)
-    url = f"https://api.cloudflare.com/client/v4/accounts/{os.getenv('cf_account')}/storage/kv/namespaces/{os.getenv('cf_kv_log')}/bulk"
-    requests.request('PUT', url, json = [{ 'base64': False, 'key': 'trader:extract:' + str(epoch), 'value': json.dumps(logged) }], headers = flare)
 
 def strip(p, v = None):
     if v == None:
@@ -617,6 +613,39 @@ def get_tiingo_intra():
 
     log('[CRYPTO/FOREX/NASDAQ/NYSE/BATS: Finished]')
 
+def get_iex_prices():
+    # Get iex (https://www.iexcloud.io/) prices (extra info)
+
+    log('[NASDAQ/NYSE/BATS (IEX): Started]')
+
+    url = [f"https://cloud.iexapis.com/stable/stock/market/batch?token={os.getenv('iex_api')}&symbols=", '&types=quote']
+    array = kv_get('index', 'RETRIEVE')['STOCK']
+    chunks = list(calc_chunks(array, 80))
+
+    packet = []
+
+    for chunk in chunks:
+        data = requests.get(f"{url[0]}{','.join(chunk).replace('-', '.')}{url[1]}", headers = iex).json()
+
+        for symbol in data:
+            pack = {}
+
+            pack['market'] = data[symbol]['quote']['marketCap'] if data[symbol]['quote']['marketCap'] else 0
+            pack['ratio'] = round(data[symbol]['quote']['peRatio'] if data[symbol]['quote']['peRatio'] else 0, 4)
+            pack['52high'] = round(data[symbol]['quote']['week52High'] if data[symbol]['quote']['week52High'] else 0, 4)
+            pack['52low'] = round(data[symbol]['quote']['week52Low'] if data[symbol]['quote']['week52Low'] else 0, 4)
+            pack['ytd'] = round(data[symbol]['quote']['ytdChange'] if data[symbol]['quote']['ytdChange'] else 0, 4)
+
+            packet.append({'key': symbol.replace('.', '-'), 'value': json.dumps(pack)})
+
+        log('Chunk completed...')
+        time.sleep(1)
+
+    log(f"Packed and Uploading ({round(len(json.dumps(packet).encode('utf-8')) / 1000, 1)}K)...")
+    kv_put('extra', packet)
+
+    log('[NASDAQ/NYSE/BATS (IEX): Finished]')
+
 def get_metadata_fill():
     # Get metadata (https://api.tiingo.com/) prices
 
@@ -695,12 +724,12 @@ def get_metadata_fill():
     log('Requesting metadata (forex)...')
 
     predefined = [
-        ['EUR', 'EUR/USD Forex', 'The European Central Bank', '[€]: The euro came into existence on 1 January 1999, although it had been a goal of the European Union (EU) and its predecessors since the 1960s. After tough negotiations, the Maastricht Treaty entered into force in 1993 with the goal of creating an economic and monetary union by 1999 for all EU states except the UK and Denmark (even though Denmark has a fixed exchange rate policy with the euro).'],
-        ['JPY', 'USD/JPY Forex', 'Bank of Japan', '[¥]: The yen (円) is the official currency of Japan. It is the third-most traded currency in the foreign exchange market, after the United States dollar and the euro. It is also widely used as a third reserve currency after the US dollar and the euro.'],
-        ['GBP', 'GBP/USD Forex', 'The Bank of England', '[£]: Sterling is the currency of the United Kingdom and nine of its associated territories. The pound is the main unit of sterling, and the word "pound" is also used to refer to the British currency generally, often qualified in international contexts as the British pound or the pound sterling. Sterling is the world\'s oldest currency that is still in use and that has been in continuous use since its inception. It is currently the fourth most-traded currency in the foreign exchange market, after the United States dollar, the euro, and the Japanese yen.'],
-        ['CAD', 'USD/CAD Forex', 'The Bank of Canada', '[CA$]: In Canada during the period of French colonization, coins were introduced, as well as one of the first examples of paper currency by a western government. During the period of British colonization, additional coinage was introduced, as well as banknotes. The Canadian colonies gradually moved away from the British pound and adopted currencies linked to the United States dollar. With Confederation in 1867, the Canadian dollar was established. By the mid-20th century, the Bank of Canada was the sole issuer of paper currency, and banks ceased to issue banknotes.'],
-        ['SEK', 'USD/SEK Forex', 'Swedish Central Bank', '[kr]: The krona is the official currency of Sweden. In English, the currency is sometimes referred to as the Swedish crown, as krona means "crown" in Swedish. The Swedish krona was the ninth-most traded currency in the world by value in April 2016.'],
-        ['CHF', 'USD/CHF Forex', 'The Swiss National Bank', '[₣]: The Swiss franc is the currency and legal tender of Switzerland and Liechtenstein. It is also legal tender in the Italian exclave of Campione d\'Italia which is surrounded by Swiss territory. The Swiss National Bank (SNB) issues banknotes and the federal mint Swissmint issues coins.']
+        ['EUR', 'EUR/USD Forex', '1984-02-24', '[€]: The euro came into existence on 1 January 1999, although it had been a goal of the European Union (EU) and its predecessors since the 1960s. After tough negotiations, the Maastricht Treaty entered into force in 1993 with the goal of creating an economic and monetary union by 1999 for all EU states except the UK and Denmark (even though Denmark has a fixed exchange rate policy with the euro).'],
+        ['JPY', 'USD/JPY Forex', '1984-02-27', '[¥]: The yen (円) is the official currency of Japan. It is the third-most traded currency in the foreign exchange market, after the United States dollar and the euro. It is also widely used as a third reserve currency after the US dollar and the euro.'],
+        ['GBP', 'GBP/USD Forex', '1984-02-27', '[£]: Sterling is the currency of the United Kingdom and nine of its associated territories. The pound is the main unit of sterling, and the word "pound" is also used to refer to the British currency generally, often qualified in international contexts as the British pound or the pound sterling. Sterling is the world\'s oldest currency that is still in use and that has been in continuous use since its inception. It is currently the fourth most-traded currency in the foreign exchange market, after the United States dollar, the euro, and the Japanese yen.'],
+        ['CAD', 'USD/CAD Forex', '1984-02-24', '[CA$]: In Canada during the period of French colonization, coins were introduced, as well as one of the first examples of paper currency by a western government. During the period of British colonization, additional coinage was introduced, as well as banknotes. The Canadian colonies gradually moved away from the British pound and adopted currencies linked to the United States dollar. With Confederation in 1867, the Canadian dollar was established. By the mid-20th century, the Bank of Canada was the sole issuer of paper currency, and banks ceased to issue banknotes.'],
+        ['SEK', 'USD/SEK Forex', '2019-01-24', '[kr]: The krona is the official currency of Sweden. In English, the currency is sometimes referred to as the Swedish crown, as krona means "crown" in Swedish. The Swedish krona was the ninth-most traded currency in the world by value in April 2016.'],
+        ['CHF', 'USD/CHF Forex', '1984-02-24', '[₣]: The Swiss franc is the currency and legal tender of Switzerland and Liechtenstein. It is also legal tender in the Italian exclave of Campione d\'Italia which is surrounded by Swiss territory. The Swiss National Bank (SNB) issues banknotes and the federal mint Swissmint issues coins.']
     ]
 
     retrieve['FOREX'] = strip(predefined)
@@ -709,7 +738,7 @@ def get_metadata_fill():
     completed = 0
     print(f'   ({completed}/{len(predefined)})          ', end = '\r')
     for each in predefined:
-        value = {'name': each[1], 'description': each[3], 'exchange': each[2], 'joined': '2000-01-01', 'intra': True}
+        value = {'name': each[1], 'description': each[3], 'exchange': 'TIINGO', 'joined': each[2], 'intra': True}
         values.append({'key': each[0].replace('USD', ''), 'value': json.dumps(value)})
 
         completed += 1
@@ -719,20 +748,20 @@ def get_metadata_fill():
     log('Requesting metadata (crypto)...')
 
     predefined = [
-        ['BTC', 'Bitcoin', 'Bitcoin was created in 2009 by a person or group of people using the pseudonym Satoshi Nakamoto, the name which appeared on the original 2008 Bitcoin white paper that first described the blockchain system that would serve as the backbone of the entire cryptocurrency market.'],
-        ['ETH', 'Ethereum', 'Ethereum was initially described in late 2013 in a white paper by Vitalik Buterin, a programmer and co-founder of Bitcoin Magazine, that described a way to build decentralized applications.'],
-        ['BNB', 'Binance Coin', 'Binance Coin was created in July 2017 and initially worked on the ethereum blockchain with the token ERC-20 before it became the native currency of Binance\'s own blockchain, the Binance Chain.'],
-        ['XRP', 'Ripple', 'The XRP Ledger first launched in June 2012. Shortly thereafter, they were joined by Chris Larsen, and the group started the Company NewCoin in September 2012 (quickly renamed OpenCoin and now named Ripple). The XRPL founders gifted 80 billion XRP, the platform\'s native currency, to the company.'],
-        ['ADA', 'Cardano', 'Cardano is a public blockchain platform. It is open-source and decentralized, with consensus achieved using proof of stake. It can facilitate peer-to-peer transactions with its internal cryptocurrency, ADA. Cardano\'s development began in 2015, led by Ethereum co-founder Charles Hoskinson.'],
-        ['DOGE', 'Dogecoin', 'The Dogecoin (DOGE) was launched in December 2013 by two software engineers (Jackson Palmer and Billy Markus), who created the payment system as a sarcastic meme coin (a type of cryptocurrency that originated from an online meme or viral image).'],
-        ['MATIC', 'Polygon', 'Polygon was created in India in 2017 and was originally called the Matic Network. It was the brainchild of experienced Ethereum developers—Jaynti Kanani, Sandeep Nailwal, and Anurag Arjun, as well as Mihailo Bjelic.'],
-        ['DOT', 'Polkadot', 'Polkadot is the brainchild of Dr. Gavin Wood, who is one of the co-founders of Ethereum and the inventor of the Solidity smart contract language. Dr. Wood started working on his idea to “design a sharded version of Ethereum” in mid-2016 and released the first draft of the Polkadot white paper in Oct.'],
-        ['TRX', 'Tron', 'Tron was established in March 2014 by Justin Sun and since 2017 has been overseen and supervised by the TRON Foundation, a non-profit organization in Singapore, established in the same year. It was originally an Ethereum-based ERC-20 token, which switched its protocol to its own blockchain in 2018.'],
-        ['LTC', 'Litecoin', 'Litecoin is a decentralized peer-to-peer cryptocurrency and open-source software project released under the MIT/X11 license. Inspired by Bitcoin, Litecoin was among the earliest altcoins, starting in October 2011.'],
-        ['AVAX', 'Avalanche', 'Avalanche was first conceptualized and shared on InterPlanetary File System (aka IPFS) in May 2018 by a pseudonymous group of enthusiasts named "Team Rocket." Later it was developed by a dedicated team of researchers from Cornell University.'],
-        ['ATOM', 'Cosmos', 'Cosmos is a network of sovereign blockchains that communicate via IBC, an interoperability protocol modeled after TCP/IP, for secure data and value transfer. The Cosmos Hub, also known as "Gaia," is a proof of stake chain with a native token, ATOM, that serves as a hub for IBC packet routing among blockchains within the Cosmos network. The Cosmos Hub, like the majority of blockchains in the Cosmos network, is secured by the Byzantine Fault-Tolerant (BFT) Proof-of-Stake consensus algorithm, Tendermint.'],
-        ['XMR', 'Monero', 'Monero (XMR) is a decentralized digital currency. Users can trade Monero securely and at a low cost for goods, services, and other cryptocurrencies. The price of Monero rises when demand exceeds supply and falls when supply exceeds demand. Besides this, Monero provides users with the privacy and anonymity of their transactions. Monero is untraceable since every transaction is private.'],
-        ['RVN', 'Ravencoin', 'Ravencoin was launched on the ninth anniversary of the launch of Bitcoin, which was on January 3, 2018. However, the announcement for Ravencoin was made on October 31, 2017. There was no ICO or pre-mine, and no coins were reserved for founders\' or developers\' rewards.']
+        ['BTC', 'Bitcoin', '2011-08-19', 'Bitcoin was created in 2009 by a person or group of people using the pseudonym Satoshi Nakamoto, the name which appeared on the original 2008 Bitcoin white paper that first described the blockchain system that would serve as the backbone of the entire cryptocurrency market.'],
+        ['ETH', 'Ethereum', '2015-08-08', 'Ethereum was initially described in late 2013 in a white paper by Vitalik Buterin, a programmer and co-founder of Bitcoin Magazine, that described a way to build decentralized applications.'],
+        ['BNB', 'Binance Coin', '2021-08-03', 'Binance Coin was created in July 2017 and initially worked on the ethereum blockchain with the token ERC-20 before it became the native currency of Binance\'s own blockchain, the Binance Chain.'],
+        ['XRP', 'Ripple', '2015-02-26', 'The XRP Ledger first launched in June 2012. Shortly thereafter, they were joined by Chris Larsen, and the group started the Company NewCoin in September 2012 (quickly renamed OpenCoin and now named Ripple). The XRPL founders gifted 80 billion XRP, the platform\'s native currency, to the company.'],
+        ['ADA', 'Cardano', '2017-12-29', 'Cardano is a public blockchain platform. It is open-source and decentralized, with consensus achieved using proof of stake. It can facilitate peer-to-peer transactions with its internal cryptocurrency, ADA. Cardano\'s development began in 2015, led by Ethereum co-founder Charles Hoskinson.'],
+        ['DOGE', 'Dogecoin', '2017-03-09', 'The Dogecoin (DOGE) was launched in December 2013 by two software engineers (Jackson Palmer and Billy Markus), who created the payment system as a sarcastic meme coin (a type of cryptocurrency that originated from an online meme or viral image).'],
+        ['MATIC', 'Polygon', '2019-06-07', 'Polygon was created in India in 2017 and was originally called the Matic Network. It was the brainchild of experienced Ethereum developers—Jaynti Kanani, Sandeep Nailwal, and Anurag Arjun, as well as Mihailo Bjelic.'],
+        ['DOT', 'Polkadot', '2017-03-09', 'Polkadot is the brainchild of Dr. Gavin Wood, who is one of the co-founders of Ethereum and the inventor of the Solidity smart contract language. Dr. Wood started working on his idea to “design a sharded version of Ethereum” in mid-2016 and released the first draft of the Polkadot white paper in Oct.'],
+        ['TRX', 'Tron', '2017-10-07', 'Tron was established in March 2014 by Justin Sun and since 2017 has been overseen and supervised by the TRON Foundation, a non-profit organization in Singapore, established in the same year. It was originally an Ethereum-based ERC-20 token, which switched its protocol to its own blockchain in 2018.'],
+        ['LTC', 'Litecoin', '2015-03-31', 'Litecoin is a decentralized peer-to-peer cryptocurrency and open-source software project released under the MIT/X11 license. Inspired by Bitcoin, Litecoin was among the earliest altcoins, starting in October 2011.'],
+        ['AVAX', 'Avalanche', '2021-05-12', 'Avalanche was first conceptualized and shared on InterPlanetary File System (aka IPFS) in May 2018 by a pseudonymous group of enthusiasts named "Team Rocket." Later it was developed by a dedicated team of researchers from Cornell University.'],
+        ['ATOM', 'Cosmos', '2019-06-07', 'Cosmos is a network of sovereign blockchains that communicate via IBC, an interoperability protocol modeled after TCP/IP, for secure data and value transfer. The Cosmos Hub, also known as "Gaia," is a proof of stake chain with a native token, ATOM, that serves as a hub for IBC packet routing among blockchains within the Cosmos network. The Cosmos Hub, like the majority of blockchains in the Cosmos network, is secured by the Byzantine Fault-Tolerant (BFT) Proof-of-Stake consensus algorithm, Tendermint.'],
+        ['XMR', 'Monero', '2015-02-17', 'Monero (XMR) is a decentralized digital currency. Users can trade Monero securely and at a low cost for goods, services, and other cryptocurrencies. The price of Monero rises when demand exceeds supply and falls when supply exceeds demand. Besides this, Monero provides users with the privacy and anonymity of their transactions. Monero is untraceable since every transaction is private.'],
+        ['RVN', 'Ravencoin', '2018-10-24', 'Ravencoin was launched on the ninth anniversary of the launch of Bitcoin, which was on January 3, 2018. However, the announcement for Ravencoin was made on October 31, 2017. There was no ICO or pre-mine, and no coins were reserved for founders\' or developers\' rewards.']
     ]
 
     retrieve['CRYPTO'] = strip(predefined)
@@ -741,7 +770,7 @@ def get_metadata_fill():
     completed = 0
     print(f'   ({completed}/{len(predefined)})          ', end = '\r')
     for each in predefined:
-        value = {'name': each[1], 'description': each[2], 'exchange': 'Tiingo', 'joined': '2000-01-01', 'intra': True}
+        value = {'name': each[1], 'description': each[3], 'exchange': 'TIINGO', 'joined': each[2], 'intra': True}
         values.append({'key': each[0].replace('USD', ''), 'value': json.dumps(value)})
 
         completed += 1
@@ -751,13 +780,13 @@ def get_metadata_fill():
     log('Requesting metadata (metals)...')
 
     predefined = [
-        ['GC-F', 'Gold Futures', 'COMEX', True, '[Au⁹⁷]: Gold was generally used for a couple thousand years solely to create things such as jewelry and idols for worship. This was until around 1500 BC when the ancient empire of Egypt, which benefited greatly from its gold-bearing region, Nubia, made gold the first official medium of exchange for international trade. Today gold can be used more practically in important electronics as a conductor that does not easily corrode.'],
-        ['SI-F', 'Silver Futures', 'COMEX', True, '[Ag¹⁰⁸]: Silver  is used for jewellery and tableware, where appearance is important. Silver is used to make mirrors, as it is the best reflector of visible light known, although it does tarnish with time. It is also used in dental alloys, solder and brazing alloys, electrical contacts and batteries. Silver paints are used for making printed circuits. Silver bromide and iodide were important in the history of photography, because of their sensitivity to light.'],
-        ['PL-F', 'Platinum Futures', 'NYMEX', True, '[Pt⁷⁸]: First discovered in Colombia, platinum was eventually found in Russia\'s Ural Mountains and became more available than ever being used only as jewelry at the time. Since the early 1900s, scientists had discovered different uses for platinum, including catalytic converters in vehicle engines, dental work, computers, pacemakers, and chemotherapy. Platinum was first used as currency in Russia when coins were minted in the late 1820s.'],
-        ['PA-F', 'Palladium Futures', 'NYMEX', True, '[Pd⁴⁶]: Palladium is one of a number of metals starting to be used in the fuel cells to power a host of things including cars and buses. Palladium is also widely used in catalytic reactions in industry, such as in hydrogenation of unsaturated hydrocarbons, as well as in jewellery and in dental fillings and crowns.'],
-        ['ALI-F', 'Aluminium Futures', 'COMEX', True, '[Al¹³]: The history of aluminium was shaped by the usage of its compound alum. The first written record of alum was in the 5th century BCE by Greek historian Herodotus. The ancients used it as a dyeing mordant, in medicine, in chemical milling, and as a fire-resistant coating for wood to protect fortresses from enemy arson. Nowadays aluminium is used everywhere from powerlines and high-rise building to spacecraft and motor vehicles as it is light, durable, and inexpensive.'],
-        ['HG-F', 'Copper Futures', 'COMEX', True, '[Cu²⁵]:  Copper was probably the first metal used by ancient cultures, and the oldest artefacts made with it date to the Neolithic period. The shiny red-brown metal was used for jewellery, tools, sculpture, bells, vessels, lamps, amulets, and death masks, amongst other things. Modern uses of the conductive copper include electrical wire, musical instruments, plumbing, tableware, electric motors, and jewelry.'],
-        ['LICO-F', 'Lithium Carbonate Futures', 'SHFE', False, '[Li₂CO₃]: Lithium Carbonate is a versatile and demanded alloy for its medical and electrical properties. In 1843, lithium carbonate was used to treat stones in the bladder. In 1859, some doctors recommended a therapy with lithium salts for a number of ailments, including gout, urinary calculi, rheumatism, mania, depression, and headache. In 1948, John Cade discovered the anti-manic effects of lithium ions. However, more recently we have used this alloy to power our many portable electronic devices from your smart phone to your new electric car. With the significant prospects of electric vehicles in the future and the scarcity of lithium carbonate, this material has skyrocketed in price in recent times.']
+        ['GC-F', 'Gold Futures', '2000-08-30', 'COMEX', True, '[Au⁹⁷]: Gold was generally used for a couple thousand years solely to create things such as jewelry and idols for worship. This was until around 1500 BC when the ancient empire of Egypt, which benefited greatly from its gold-bearing region, Nubia, made gold the first official medium of exchange for international trade. Today gold can be used more practically in important electronics as a conductor that does not easily corrode.'],
+        ['SI-F', 'Silver Futures', '2000-08-30', 'COMEX', True, '[Ag¹⁰⁸]: Silver  is used for jewellery and tableware, where appearance is important. Silver is used to make mirrors, as it is the best reflector of visible light known, although it does tarnish with time. It is also used in dental alloys, solder and brazing alloys, electrical contacts and batteries. Silver paints are used for making printed circuits. Silver bromide and iodide were important in the history of photography, because of their sensitivity to light.'],
+        ['PL-F', 'Platinum Futures', '2000-01-04', 'NYMEX', True, '[Pt⁷⁸]: First discovered in Colombia, platinum was eventually found in Russia\'s Ural Mountains and became more available than ever being used only as jewelry at the time. Since the early 1900s, scientists had discovered different uses for platinum, including catalytic converters in vehicle engines, dental work, computers, pacemakers, and chemotherapy. Platinum was first used as currency in Russia when coins were minted in the late 1820s.'],
+        ['PA-F', 'Palladium Futures', '2000-01-04', 'NYMEX', True, '[Pd⁴⁶]: Palladium is one of a number of metals starting to be used in the fuel cells to power a host of things including cars and buses. Palladium is also widely used in catalytic reactions in industry, such as in hydrogenation of unsaturated hydrocarbons, as well as in jewellery and in dental fillings and crowns.'],
+        ['ALI-F', 'Aluminium Futures', '2014-05-06', 'COMEX', True, '[Al¹³]: The history of aluminium was shaped by the usage of its compound alum. The first written record of alum was in the 5th century BCE by Greek historian Herodotus. The ancients used it as a dyeing mordant, in medicine, in chemical milling, and as a fire-resistant coating for wood to protect fortresses from enemy arson. Nowadays aluminium is used everywhere from powerlines and high-rise building to spacecraft and motor vehicles as it is light, durable, and inexpensive.'],
+        ['HG-F', 'Copper Futures', '2000-08-30', 'COMEX', True, '[Cu²⁵]:  Copper was probably the first metal used by ancient cultures, and the oldest artefacts made with it date to the Neolithic period. The shiny red-brown metal was used for jewellery, tools, sculpture, bells, vessels, lamps, amulets, and death masks, amongst other things. Modern uses of the conductive copper include electrical wire, musical instruments, plumbing, tableware, electric motors, and jewelry.'],
+        ['LICO-F', 'Lithium Carbonate Futures', '2017-05-10', 'SHFE', False, '[Li₂CO₃]: Lithium Carbonate is a versatile and demanded alloy for its medical and electrical properties. In 1843, lithium carbonate was used to treat stones in the bladder. In 1859, some doctors recommended a therapy with lithium salts for a number of ailments, including gout, urinary calculi, rheumatism, mania, depression, and headache. In 1948, John Cade discovered the anti-manic effects of lithium ions. However, more recently we have used this alloy to power our many portable electronic devices from your smart phone to your new electric car. With the significant prospects of electric vehicles in the future and the scarcity of lithium carbonate, this material has skyrocketed in price in recent times.']
     ]
 
     retrieve['METALS'] = strip(predefined)
@@ -766,7 +795,7 @@ def get_metadata_fill():
     completed = 0
     print(f'   ({completed}/{len(predefined)})          ', end = '\r')
     for each in predefined:
-        value = {'name': each[1], 'description': each[4], 'exchange': each[2], 'joined': '2000-01-01', 'intra': each[3]}
+        value = {'name': each[1], 'description': each[5], 'exchange': each[3], 'joined': each[2], 'intra': each[4]}
         values.append({'key': each[0], 'value': json.dumps(value)})
 
         completed += 1
@@ -776,11 +805,11 @@ def get_metadata_fill():
     log('Requesting metadata (energy)...')
 
     predefined = [
-        ['CL-F', 'WTI Crude Oil Futures', 'West Texas Intermediate (WTI) crude oil is a specific grade of crude oil and one of the main three benchmarks in oil pricing, along with Brent and Dubai Crude. WTI is known as a light sweet oil because it contains between 0.24%% and 0.34%% sulfur, making it "sweet," and has a low density (specific gravity), making it "light." This oil is extracted in the Texas, Oklahoma, and North Dakota states of America.'],
-        ['BZ-F', 'Brent Crude Oil Futures', 'Brent Crude is more ubiquitous, and most oil is priced using Brent Crude as the benchmark, akin to two-thirds of all oil pricing. Brent Crude is produced near the sea, so transportation costs are significantly lower. In contrast, West Texas Intermediate is produced in landlocked areas, making transportation costs more onerous. The Organization of the Petroleum Exporting Countries (OPEC) controls most of the oil production and distribution, often dictating costs for not only oil suppliers but countries as well. Most nations factor oil prices into their budgets, so OPEC has been considered a leading geopolitical force.'],
-        ['RB-F', 'RBOB Gasoline Futures', '"Reformulated Gasoline Blendstock for Oxygenate Blending" (RBOB) is motor gasoline blending components intended for blending with oxygenates to produce finished reformulated gasoline. RB (CME Group) supplies 30%% of the US market with gasoline.'],
-        ['HO-F', 'Heating Oil Futures', 'Heating oil is mainly used for space heating. Some homes and residential commercial buildings also use heating oil to heat water but in much smaller amounts than what they use for space heating. Because cold weather affects heating demand, most heating oil use occurs during the heating season—October through March according to the EIA.'],
-        ['NG-F', 'Natural Gas Futures', 'Compared to other similar fossil fuels, natural gas is much cleaning producing 60%% less carbon dioxide than coal counterparts and 30%% less in power plants that use oil derivatives. Natural gas is versatile being used as a fuel for process heating, in combined heat and power systems, as a raw material (feedstock) to produce chemicals, fertilizer, and hydrogen, as lease and plant fuel, space heating, water heating, outdoor lighting, and in highly efficient motor vehicles.']
+        ['CL-F', 'WTI Crude Oil Futures', '2000-08-23', 'West Texas Intermediate (WTI) crude oil is a specific grade of crude oil and one of the main three benchmarks in oil pricing, along with Brent and Dubai Crude. WTI is known as a light sweet oil because it contains between 0.24%% and 0.34%% sulfur, making it "sweet," and has a low density (specific gravity), making it "light." This oil is extracted in the Texas, Oklahoma, and North Dakota states of America.'],
+        ['BZ-F', 'Brent Crude Oil Futures', '2007-07-30', 'Brent Crude is more ubiquitous, and most oil is priced using Brent Crude as the benchmark, akin to two-thirds of all oil pricing. Brent Crude is produced near the sea, so transportation costs are significantly lower. In contrast, West Texas Intermediate is produced in landlocked areas, making transportation costs more onerous. The Organization of the Petroleum Exporting Countries (OPEC) controls most of the oil production and distribution, often dictating costs for not only oil suppliers but countries as well. Most nations factor oil prices into their budgets, so OPEC has been considered a leading geopolitical force.'],
+        ['RB-F', 'RBOB Gasoline Futures', '2000-11-01', '"Reformulated Gasoline Blendstock for Oxygenate Blending" (RBOB) is motor gasoline blending components intended for blending with oxygenates to produce finished reformulated gasoline. RB (CME Group) supplies 30%% of the US market with gasoline.'],
+        ['HO-F', 'Heating Oil Futures', '2000-09-01', 'Heating oil is mainly used for space heating. Some homes and residential commercial buildings also use heating oil to heat water but in much smaller amounts than what they use for space heating. Because cold weather affects heating demand, most heating oil use occurs during the heating season—October through March according to the EIA.'],
+        ['NG-F', 'Natural Gas Futures', '2000-08-30', 'Compared to other similar fossil fuels, natural gas is much cleaning producing 60%% less carbon dioxide than coal counterparts and 30%% less in power plants that use oil derivatives. Natural gas is versatile being used as a fuel for process heating, in combined heat and power systems, as a raw material (feedstock) to produce chemicals, fertilizer, and hydrogen, as lease and plant fuel, space heating, water heating, outdoor lighting, and in highly efficient motor vehicles.']
     ]
 
     retrieve['ENERGY'] = strip(predefined)
@@ -789,7 +818,7 @@ def get_metadata_fill():
     completed = 0
     print(f'   ({completed}/{len(predefined)})          ', end = '\r')
     for each in predefined:
-        value = {'name': each[1], 'description': each[2], 'exchange': 'NYMEX', 'joined': '2000-01-01', 'access': True}
+        value = {'name': each[1], 'description': each[3], 'exchange': 'NYMEX', 'joined': each[2], 'access': True}
         values.append({'key': each[0], 'value': json.dumps(value)})
 
         completed += 1
@@ -815,6 +844,7 @@ try:
             get_yahoo_daily_prices()
             get_investing_prices()
             get_tiingo_daily()
+            get_iex_prices()
 
         if int(time.strftime('%H%M')) > 925 and int(time.strftime('%H%M')) < 1605: # Between About 9:30am and 4:00pm
             get_index_prices()
@@ -824,7 +854,7 @@ try:
     if os.getenv('prime') == 'true': # If prime (.env) is true
         get_metadata_fill()
 
+    get_iex_prices()
+
 except Exception as error:
     log('[ERROR!]: ' + traceback.format_exc())
-
-logger_end()

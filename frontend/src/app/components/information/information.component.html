@@ -1,9 +1,14 @@
-<h1 class="nosel">Policies</h1>
+<h1 class="nosel">
+  <img
+    src="https://content.kpnc.io/img/kpnc/symbol/INFO.webp"
+    alt="Information"
+  />
+</h1>
 
 <main>
   <div class="container">
-    <h2>Extra Information for Trader:</h2>
-    <h3>⤷ Latest info at: <a href="https://kpnc.io/Xe3ib">kpnc.io/Xe3ib</a>...</h3>
+    <h2>Information on Trader:</h2>
+    <h3>⤷ Latest info in the repository...</h3>
 
     <div class="text" style="margin-top: 0;">
       <h2>Software License</h2>
@@ -19,7 +24,7 @@
         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, SOFTWARE.
       </p>
       <p>
-        For the latest information see <a href="https://github.com/kpncio/trader/blob/main/LICENSE">LICENSE</a>...
+        For the latest information see <a href="https://github.com/kpncio/trader/blob/main/LICENSE" target="_blank">LICENSE</a>...
       </p>
     </div>
 
@@ -27,43 +32,44 @@
       <h2>Cookies & Sessions</h2>
       <p><strong>Cloudflare Services</strong></p>
       <p>
-        Trader does not read, write, or interact with any cookies, local sessions, or local storage. However KPNC Technology uses Cloudflare services to provide users with the best experience and to protect our own infrastructure. Cloudflare sits in between your client and our origin servers and may read, write, or interact with their own cookies, local sessions, or local storage for a variety of reasons.
+        Trader does not read, write, or interact with any cookies, local sessions, or local storage; however, KPNC Technology uses Cloudflare services to provide users with the best experience and to protect our own infrastructure. Cloudflare sits in between your client and our origin servers and may read, write, or interact with their own cookies, local sessions, or local storage for a variety of reasons.
       </p>
       <p>
-        For more information see <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's Privacy Policy</a>...
+        For more information see <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">Cloudflare's Privacy Policy</a>...
       </p>
     </div>
 
     <div class="text">
       <h2>Market Data</h2>
-      <p><strong>Tiingo API, Metals Live API</strong></p>
+      <p><strong>Tiingo API, IEX Cloud, Yahoo Finance</strong></p>
       <p>
+        Historical and intraday data on over 500 of the top stocks, currencies, and crypto currencies is provided by Tiingo API with supplimental data being being provided by IEX Cloud. Historical and intraday data on metal and energy futures are provided by Yahoo Finance.
         The underlying stock, forex, and crypto information being displayed in Trader is provided by Tiingo and IEX. Information on precious metals and other commodities are from Metals Live.
       </p>
       <p>
-        If you are interested in market data see <a href="https://api.tiingo.com/">Tiingo API</a> and <a href="https://api.metals.live/">Metals Live API</a> for more information...
+        If you are interested in market data see <a href="https://api.tiingo.com/" target="_blank">Tiingo API</a>, <a href="https://iexcloud.io/" target="_blank">IEX Cloud</a> and <a href="https://finance.yahoo.com/" target="_blank">Yahoo Finance</a> for more information...
       </p>
     </div>
 
     <div class="text">
       <h2>Backend Technologies</h2>
-      <p><strong>Cloudflare Workers, Tiingo API, Metals Live API</strong></p>
+      <p><strong>Cloudflare Workers/KV, Beautiful Soup, CloudScraper, YFinance</strong></p>
       <p>
-        The backend of Trader uses Tiingo API (see above) to get current information on stock markets and Metals Live API for public information on precious metals and other commodities.  Currently Trader has access to six diverse indexes including the S&P 500, Nasdaq 100, Dow Jones Industrial Average, Forex, Crypto, and Metals. All backend requests are routed through Cloudflare Workers, a relatively new serverless services by Cloudflare that allows for low latency requests that power the entire site.
+        Cloudflare Workers and Workers KV allow for low latency requests from users around the world. Python data scraping packages including Beautiful Soup, Cloudscraper, and YFinance make collecting publicly available data a breeze.
       </p>
       <p>
-        See more information at <a href="https://workers.cloudflare.com/">Cloudflare Workers</a>, <a href="https://api.tiingo.com/">Tiingo API</a>, and <a href="https://api.metals.live/">Metals Live API</a>...
+        See more information at <a href="https://workers.cloudflare.com/" target="_blank">Workers</a>, <a href="https://pypi.org/project/bs4/" target="_blank">Beautiful Soup</a>, <a href="https://pypi.org/project/cloudscraper/" target="_blank">CloudScraper</a>, and <a href="https://pypi.org/project/yfinance/" target="_blank">YFinance</a>...
       </p>
     </div>
 
     <div class="text">
       <h2>Frontend Technologies</h2>
-      <p><strong>Angular, Lightweight Charts</strong></p>
+      <p><strong>Angular, ECharts, Lightweight Charts</strong></p>
       <p>
-        The frontend of Trader uses the Angular framework for a powerfull and performant experience. However, data visualization is arguably just as important in trading so Trader uses Lightweight Charts from TradingView. Lightweight Charts provides fast and easy financial based charts that are highly effective for end users.
+        The frontend of Trader uses Google's Angular framework for a powerful and performant experience. However, data visualization is arguably just as important in trading so Trader uses Apache's ECharts for general charting and TradingView's Lightweight Charts for financial specific charting. Lightweight Charts provides fast and easy financial based charts that are incredibly customizable.
       </p>
       <p>
-        See more information at <a href="https://angular.io/">Angular</a> and <a href="https://www.tradingview.com/">Chart.js</a>...
+        See more information at <a href="https://angular.io/" target="_blank">Angular</a>, <a href="https://echarts.apache.org/" target="_blank">ECharts</a>, and <a href="https://www.tradingview.com/lightweight-charts/" target="_blank">Lightweight Charts</a>...
       </p>
     </div>
 
@@ -73,7 +79,7 @@
         Want to report a bug, contribute code, request a feature, or contact KPNC Technology?
       </p>
       <p>
-        You can find all of the relavant information on the organization's <a href="https://github.com/kpncio/">GitHub</a> profile including links to this project and Email...
+        You can find all of the relavant information and more on the organization's <a href="https://github.com/kpncio/" target="_blank">GitHub</a> profile including links to this project and general contact information...
       </p>
     </div>
   </div>

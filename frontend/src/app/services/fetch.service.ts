@@ -8,7 +8,7 @@ import { Observable, observable } from 'rxjs';
 export class FetchService {
   constructor(private http: HttpClient) { }
 
-  public request(url: string): Observable<any> {
+  public request(name: string, key: string): Observable<any> {
     const options = {
       headers: new HttpHeaders({
         'Accept': 'application/json',
@@ -16,6 +16,17 @@ export class FetchService {
       })
     };
 
-    return this.http.get(url, options);
+    return this.http.get(`https://app.kpnc.io/trader/retrieve/${name}/${key}`, options);
   }
+
+  // public request(url: string): Observable<any> {
+  //   const options = {
+  //     headers: new HttpHeaders({
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     })
+  //   };
+
+  //   return this.http.get(url, options);
+  // }
 }

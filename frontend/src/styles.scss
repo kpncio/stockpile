@@ -15,7 +15,7 @@ body {
 }
 
 .container {
-  width: 85%;
+  width: 90%;
   margin: 0 auto;
   max-width: 1200px;
 }
@@ -62,6 +62,12 @@ h3 {
       color: $blue;
     }
   }
+}
+
+h4 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 2rem;
 }
 
 main {

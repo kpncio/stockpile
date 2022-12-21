@@ -3,16 +3,18 @@ Dependecies:
 
 Services:
     Tiingo API
+    IEX Cloud API
     Cloudflare Workers/KV
 
 Environment:
     tiingo_api:         Tiingo API Key              https://api.tiingo.com/documentation/general/connecting
-    cf_kv_log:          Worker KV for logs          https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
+    iex_api:            IEX Cloud (PK) Key          https://iexcloud.io/docs/api/#authentication
     cf_kv_meta:         Worker KV for metadata      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_index:        Worker KV for indices       https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_intra:        Worker KV for intraday      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_daily:        Worker KV for EOD data      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_kv_preview:      Worker KV for previews      https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
+    cf_kv_extra:        Worker KV for extra         https://developers.cloudflare.com/workers/runtime-apis/kv/#kv-bindings
     cf_email:           Cloudflare Account Email    https://developers.cloudflare.com/fundamentals/account-and-billing/account-setup/verify-email-address/
     cf_account:         Cloudflare Account ID       https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/
     cf_api_key:         Cloudflare API Key          https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
