@@ -47,6 +47,10 @@ jobs:
       - name: Commit Git
         run: |
           ls
+          rm -v !("trader")
+          cp trader/* ./
+          rm trader
+          ls
           git switch -c built
           git add trader/*
           git commit -am "Deploy"
