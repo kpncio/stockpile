@@ -48,7 +48,8 @@ jobs:
           git config user.email "<>"
       - name: Commit Git
         run: |
+          ls
           git switch -c built
-          git add trader/*
-          git commit -am "Deploy"
+          git add *
+          git commit -am "Autodeployed"
           git push origin built
