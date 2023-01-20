@@ -55,4 +55,4 @@ jobs:
           git switch -c built
           git add *
           git commit -am "Autodeployed"
-          git push origin built
+          git push -f origin built
