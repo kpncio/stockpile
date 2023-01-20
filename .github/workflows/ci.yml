@@ -28,14 +28,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifacture
-          path: frontend/dist/trader
+          path: frontend/dist
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Clear Workspace
-        run: rm -rf *
       - name: Actions Checkout
         uses: actions/checkout@v3
       - name: Download Build
@@ -48,6 +46,11 @@ jobs:
           git config user.email "<>"
       - name: Commit Git
         run: |
+          ls
+          shopt -s extglob
+          rm -rfv !("trader")
+          mv trader/* ./
+          rm -rf trader
           ls
           git switch -c built
           git add *
