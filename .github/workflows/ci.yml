@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifacture
-          path: frontend/dist
+          path: frontend/dist/trader
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -46,11 +46,7 @@ jobs:
           git config user.email "<>"
       - name: Commit Git
         run: |
-          ls
-          rm -v !("trader")
-          cp trader/* ./
-          rm trader
-          ls
+          rm -rf *
           git switch -c built
           git add trader/*
           git commit -am "Deploy"
