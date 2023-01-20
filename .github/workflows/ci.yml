@@ -28,6 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: artifacture
+          path: frontend/dist
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
