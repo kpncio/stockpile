@@ -38,6 +38,8 @@ export interface IColumn {
 })
 export class QuoteComponent implements AfterViewInit {
   symbol: string | undefined;
+  vieweddaily: string[] = [];
+  viewedintra: string[] = [];
   viewdaily: IData = {};
   viewintra: IData = {};
   nextdaily: number = 0;
@@ -336,12 +338,16 @@ export class QuoteComponent implements AfterViewInit {
         if (this.keys['daily'][this.nextdaily]) {
           this.viewdaily[`${this.keys['daily'][this.nextdaily]}|00:00`] = this.daily[this.keys['daily'][this.nextdaily]];
           this.nextdaily++;
+
+          this.vieweddaily = Object.keys(this.viewdaily);
         }
       } else {
         if (this.keys['intra'][this.nextintra]) {
           const date = new Date(this.keys['intra'][this.nextintra] * 1000);
           this.viewintra[strftime('%Y-%m-%d|%H:%M', this.local(date))] = this.intra[this.keys['intra'][this.nextintra]];
           this.nextintra++;
+
+          this.viewedintra = Object.keys(this.viewintra);
         }
       }
     }

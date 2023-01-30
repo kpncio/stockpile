@@ -104,36 +104,36 @@
             </tr>
           </thead>
           <tbody *ngIf="eod">
-            <tr *ngFor="let row of viewdaily | keyvalue:sorted" [ngClass]="{'up': row['value']['change'] >= 0, 'down': row['value']['change'] < 0}">
-              <td>{{row['key'].split('|')[0]}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['open'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['high'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['low'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['close'], 3)}}</td>
-              <td *ngIf="table.offsetWidth <= 580">{{padded(row['value']['close'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 400">{{padded(row['value']['change'], 3)}}</td>
-              <td>{{padded(row['value']['percent'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 750">{{row['value']['volume'].toLocaleString()}}</td>
-              <td *ngIf="eod && table.offsetWidth > 1000" [ngClass]="{'highlight': row['value']['dividend'] > 0}">
-                {{padded(row['value']['dividend'], 2)}}
+            <tr *ngFor="let row of vieweddaily" [ngClass]="{'up': viewdaily[row]['change'] >= 0, 'down': viewdaily[row]['change'] < 0}">
+              <td>{{row.split('|')[0]}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewdaily[row]['open'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewdaily[row]['high'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewdaily[row]['low'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewdaily[row]['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth <= 580">{{padded(viewdaily[row]['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 400">{{padded(viewdaily[row]['change'], 3)}}</td>
+              <td>{{padded(viewdaily[row]['percent'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 750">{{viewdaily[row]['volume'].toLocaleString()}}</td>
+              <td *ngIf="eod && table.offsetWidth > 1000" [ngClass]="{'highlight': viewdaily[row]['dividend'] > 0}">
+                {{padded(viewdaily[row]['dividend'], 2)}}
               </td>
-              <td *ngIf="eod && table.offsetWidth > 1000" [ngClass]="{'highlight': row['value']['split'] > 1}">
-                {{padded(row['value']['split'], 1)}}
+              <td *ngIf="eod && table.offsetWidth > 1000" [ngClass]="{'highlight': viewdaily[row]['split'] > 1}">
+                {{padded(viewdaily[row]['split'], 1)}}
               </td>
             </tr>
           </tbody>
           <tbody *ngIf="!eod">
-            <tr *ngFor="let row of viewintra | keyvalue:sorted" [ngClass]="{'up': row['value']['change'] >= 0, 'down': row['value']['change'] < 0}">
-              <td>{{row['key'].split('|')[0]}}</td>
-              <td>{{row['key'].split('|')[1]}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['open'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['high'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['low'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 580">{{padded(row['value']['close'], 3)}}</td>
-              <td *ngIf="table.offsetWidth <= 580">{{padded(row['value']['close'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 400">{{padded(row['value']['change'], 3)}}</td>
-              <td>{{padded(row['value']['percent'], 3)}}</td>
-              <td *ngIf="table.offsetWidth > 750">{{row['value']['volume'].toLocaleString()}}</td>
+            <tr  *ngFor="let row of viewedintra" [ngClass]="{'up': viewintra[row]['change'] >= 0, 'down': viewintra[row]['change'] < 0}">
+              <td>{{row.split('|')[0]}}</td>
+              <td>{{row.split('|')[1]}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewintra[row]['open'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewintra[row]['high'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewintra[row]['low'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 580">{{padded(viewintra[row]['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth <= 580">{{padded(viewintra[row]['close'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 400">{{padded(viewintra[row]['change'], 3)}}</td>
+              <td>{{padded(viewintra[row]['percent'], 3)}}</td>
+              <td *ngIf="table.offsetWidth > 750">{{viewintra[row]['volume'].toLocaleString()}}</td>
             </tr>
           </tbody>
         </table>
