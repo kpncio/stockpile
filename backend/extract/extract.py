@@ -183,8 +183,27 @@ def get_index_contituents():
             ['2', 'USD/JPY Forex', 'JPY', '13.6', '-', '-', '-'],
             ['3', 'GBP/USD Forex', 'GBP', '11.9', '-', '-', '-'],
             ['4', 'USD/CAD Forex', 'CAD', '9.1', '-', '-', '-'],
-            ['5', 'USD/SERK Forex', 'SEK', '4.2', '-', '-', '-'],
-            ['6', 'USD/CHF Forex', 'CHF', '3.6', '-', '-', '-']
+            ['5', 'USD/SEK Forex', 'SEK', '4.2', '-', '-', '-'],
+            ['6', 'USD/CHF Forex', 'CHF', '3.6', '-', '-', '-'],
+            ['7', 'AUD/USD Forex', 'AUD', '0', '-', '-', '-'],
+            ['8', 'USD/BYN Forex', 'BYN', '0', '-', '-', '-'],
+            ['9', 'USD/CNH Forex', 'CNH', '0', '-', '-', '-'],
+            ['10', 'USD/CZK Forex', 'CZK', '0', '-', '-', '-'],
+            ['11', 'USD/DKK Forex', 'DKK', '0', '-', '-', '-'],
+            ['12', 'DOLLAR/USD Forex', 'DOLLAR', '0', '-', '-', '-'],
+            ['13', 'USD/HKD Forex', 'HKD', '0', '-', '-', '-'],
+            ['14', 'USD/HUF Forex', 'HUF', '0', '-', '-', '-'],
+            ['15', 'USD/MXN Forex', 'MXN', '0', '-', '-', '-'],
+            ['16', 'USD/NOK Forex', 'NOK', '0', '-', '-', '-'],
+            ['17', 'NZD/USD Forex', 'NZD', '0', '-', '-', '-'],
+            ['18', 'USD/PLN Forex', 'PLN', '0', '-', '-', '-'],
+            ['19', 'USD/SGD Forex', 'SGD', '0', '-', '-', '-'],
+            ['20', 'USD/TRY Forex', 'TRY', '0', '-', '-', '-'],
+            ['21', 'XAG/USD Forex', 'XAG', '0', '-', '-', '-'],
+            ['22', 'XAU/USD Forex', 'XAU', '0', '-', '-', '-'],
+            ['23', 'XPD/USD Forex', 'XPD', '0', '-', '-', '-'],
+            ['24', 'XPT/USD Forex', 'XPT', '0', '-', '-', '-'],
+            ['25', 'USD/ZAR Forex', 'ZAR', '0', '-', '-', '-']
         ],
         'CRYPTO': [
             ['1', 'Bitcoin', 'BTC', '20', '-', '-', '-'],
@@ -570,7 +589,7 @@ def get_tiingo_daily():
 
     log('Retrieving forex prices...')
     url = ['https://api.tiingo.com/tiingo/fx/prices?tickers=', '&startDate=', '&resampleFreq=1day']
-    array = ["EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDSEK", "USDCHF"]
+    array = ["EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDSEK", "USDCHF", "AUDUSD", "USDBYN", "USDCNH", "USDCZK", "USDDKK", "DOLLARUSD", "USDHKD", "USDHUF", "USDMXN", "USDNOK", "NZDUSD", "USDPLN", "USDSGD", "USDTRY", "XAGUSD", "XAUUSD", "XPDUSD", "XPTUSD", "USDZAR"]
     get_tiingo_prices(url, array, True, 1, start)
 
     log('Retrieving crypto prices...')
@@ -599,7 +618,7 @@ def get_tiingo_intra():
     log('Retrieving forex prices...')
     srt = start if start != '1800-01-01' else daysago(30)
     url = ['https://api.tiingo.com/tiingo/fx/prices?tickers=', '&startDate=', '&resampleFreq=5min']
-    array = ["EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDSEK", "USDCHF"]
+    array = ["EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDSEK", "USDCHF", "AUDUSD", "USDBYN", "USDCNH", "USDCZK", "USDDKK", "DOLLARUSD", "USDHKD", "USDHUF", "USDMXN", "USDNOK", "NZDUSD", "USDPLN", "USDSGD", "USDTRY", "XAGUSD", "XAUUSD", "XPDUSD", "XPTUSD", "USDZAR"]
     get_tiingo_prices(url, array, False, 1, srt)
 
     log('Retrieving crypto prices...')
@@ -728,8 +747,27 @@ def get_metadata_fill():
         ['JPY', 'USD/JPY Forex', '1984-02-27', '[¥]: The yen (円) is the official currency of Japan. It is the third-most traded currency in the foreign exchange market, after the United States dollar and the euro. It is also widely used as a third reserve currency after the US dollar and the euro.'],
         ['GBP', 'GBP/USD Forex', '1984-02-27', '[£]: Sterling is the currency of the United Kingdom and nine of its associated territories. The pound is the main unit of sterling, and the word "pound" is also used to refer to the British currency generally, often qualified in international contexts as the British pound or the pound sterling. Sterling is the world\'s oldest currency that is still in use and that has been in continuous use since its inception. It is currently the fourth most-traded currency in the foreign exchange market, after the United States dollar, the euro, and the Japanese yen.'],
         ['CAD', 'USD/CAD Forex', '1984-02-24', '[CA$]: In Canada during the period of French colonization, coins were introduced, as well as one of the first examples of paper currency by a western government. During the period of British colonization, additional coinage was introduced, as well as banknotes. The Canadian colonies gradually moved away from the British pound and adopted currencies linked to the United States dollar. With Confederation in 1867, the Canadian dollar was established. By the mid-20th century, the Bank of Canada was the sole issuer of paper currency, and banks ceased to issue banknotes.'],
-        ['SEK', 'USD/SEK Forex', '2019-01-24', '[kr]: The krona is the official currency of Sweden. In English, the currency is sometimes referred to as the Swedish crown, as krona means "crown" in Swedish. The Swedish krona was the ninth-most traded currency in the world by value in April 2016.'],
-        ['CHF', 'USD/CHF Forex', '1984-02-24', '[₣]: The Swiss franc is the currency and legal tender of Switzerland and Liechtenstein. It is also legal tender in the Italian exclave of Campione d\'Italia which is surrounded by Swiss territory. The Swiss National Bank (SNB) issues banknotes and the federal mint Swissmint issues coins.']
+        ['SEK', 'USD/SEK Forex', '2019-01-24', '[Kr]: The krona is the official currency of Sweden. In English, the currency is sometimes referred to as the Swedish crown, as krona means "crown" in Swedish. The Swedish krona was the ninth-most traded currency in the world by value in April 2016.'],
+        ['CHF', 'USD/CHF Forex', '1984-02-24', '[₣]: The Swiss franc is the currency and legal tender of Switzerland and Liechtenstein. It is also legal tender in the Italian exclave of Campione d\'Italia which is surrounded by Swiss territory. The Swiss National Bank (SNB) issues banknotes and the federal mint Swissmint issues coins.'],
+        ['AUD', 'AUD/USD Forex', '0000-00-00', '[AU$]: The Australian dollar is the official currency of Australia, its external territories, and even three other sovern islands in the south east pacific ocean. It was the fifth most traded currency in 2016.'],
+        ['BYN', 'USD/BYN Forex', '0000-00-00', '[Br]: Throughout the past three decades, Belarus has officially supported three different ruble currencies. These currencies include the BYB which exchanged for 10 Soviet Rubles, the BYR which exchanged for 1,000 BYB, and finally the BYN which is the current currency for Belarus and exchanged for 10,000 BYR.'],
+        ['CNH', 'USD/CNH Forex', '0000-00-00', '[¥]: The Chinese yuan (CNY) or Renminbi (RMB) are the official currencies used within China; however, the Chinese currency that is used outside of China has a different value and market associated with it. For example: CNT (a derivative of Renminbi) is used when dealing with chinese currency Taiwan. Currenty Trader only has access to CNH (the currency used for unspecific offshore transactions like in Hong Kong, Indonesia, or the United Kingdom) and is usually quite close to the mainland currency (CNY).'],
+        ['CZK', 'USD/CZK Forex', '0000-00-00', '[Kč]: The Czech koruna is the offical currency of the Czech Republic and is one of the European Union\'s eight currencies. The Czech Republic is legally bound to fully adopt the euro, but the target date has yet to be determinded.'],
+        ['DKK', 'USD/DKK Forex', '0000-00-00', '[DKr]: The Danish krone is the official currency of Denmark, Greenland, and the Faroe Islands. Like other krone/krona/koruna terms, the term krone translates to crown and may be used when refering to it in english. The krone is attached to the euro and full adoption is favored by some major parties in the Denmark.'],
+        ['DOLLAR', 'DOLLAR/USD Forex', '0000-00-00', '[Dollar Basket]: The US currency basket (DXY or USDX) is an index comprised of five major competing currencies including the Euro at 57.6%, Japanese yen at 13.6%, British pound at 11.9%, Canadian dollar at 9.1%, Swedish krona at 4.2%, and the Swiss franc at 3.6%. The US Dollar Index (or basket) started in 1973 with a base of 100, and values since then are realtive to this base.'],
+        ['HKD', 'USD/HKD Forex', '0000-00-00', '[HK$]: The Hong Kond dollar is the official currency of the Hong Kong Special Administrative Region (like the Norvinsk Special Economic Zone in Russia). While Hong Kong is incredibly small in size, their economic power is known across the world with the Hong Kong dollar being the ninth most traded currency in the world.'],
+        ['HUF', 'USD/HUF Forex', '0000-00-00', '[Ft]: The Hungarian forint is the official currency of Hungary and was created to stablize the post-World War II Hungarian Economy; however, while transitioning to a market economy the forint became very inflated in the 1980s and 1990s. The forint is currently stable and declared fully convertible.'],
+        ['MXN', 'USD/MXN Forex', '0000-00-00', '[Mex$]: The Mexican peso is the offical currency of Mexico and shares a common origin with the dollar as they had both derived from the 16th-19th century Spanish Dollar. This is why both the Mexican peso and United States dollar officially use the $ and ¢ symbols while the Philippine peso uses the more sensible ₱ symbol.'],
+        ['NOK', 'USD/NOK Forex', '0000-00-00', '[NKr]: The Norwegian krone (or crown) is the official curency of the Kingdom of Norway (inlcuding Svalbard). The currency can be subdivided into 100 øre; however, like similar countries, Norway has withdrawn the last coin denominated øre in 2012 as coinage like the US Penny are no longer economically viable.'],
+        ['NZD', 'NZD/USD Forex', '0000-00-00', '[NZ$]: The New Zealand dollar is the official currency of New Zealand,its four dependent territories, and even one British overseas territory. Like the US dollar may be called a buck, the NZ dollar may be called a kiwi dollar as a kiwi (a flightless bird) is depicted on its one-dollar coin. The kiwi dollar is the tenth most traded currency in the world.'],
+        ['PLN', 'USD/PLN Forex', '0000-00-00', '[zł]: The Polish złoty is the official currency of Poland and is the twenty-first most traded currency in the world. Złoty translates to golden and was introduced to replace the Polish marka after World War I and had seen redenomination in the 1990s changing from PLZ to PLN at a ratio of 10,000 old złoty for 1 new złoty.'],
+        ['SGD', 'USD/SGD Forex', '0000-00-00', '[S$]: The Singapore dollar is the official currency of the Republic of Singapore and punches above its size like Hong Kong as it is the 13th most traded currency in the world.'],
+        ['TRY', 'USD/TRY Forex', '0000-00-00', '[₺]: The Turkish lira is official curreny of both Turkey and Northern Cyprus. The Turkish lira followed the Ottoman lira after the fall of the Ottoman empire and saw a couple of renditions like other currencies and economies in the eastern european/asia minor area.'],
+        ['XAG', 'XAG/USD Forex', '0000-00-00', '[Ag]: The exchange rate of silver to US dollars.'],
+        ['XAU', 'XAU/USD Forex', '0000-00-00', '[Au]: The exchange rate of gold to US dollars.'],
+        ['XPD', 'XPD/USD Forex', '0000-00-00', '[Pd]: The exchange rate of palladium to US dollars.'],
+        ['XPT', 'XPT/USD Forex', '0000-00-00', '[Pt]: The exchange rate of platinum to US dolarrs.'],
+        ['ZAR', 'USD/ZAR Forex', '0000-00-00', '[R]: The South African rand iis the official currency of the Southern African Common Monetary Area and includes South Africa, Nimibia, Lesotho, and Eswantini. The rand is used along side other CMA currencies including the Namibian dollar, Lesotho loti, and the Swazi lilangeni. Many lesser economies around South Africa also use the currency including Angola, Matawi, Zambia, and Zimbabwe.']
     ]
 
     retrieve['FOREX'] = strip(predefined)

@@ -318,6 +318,7 @@ export class QuoteComponent implements AfterViewInit {
   }
 
   padded = (value: number, places: number) => {
+    //return (value + 0.5) << 0;
     return (Math.round(value * 10 ** places) / 10 ** places).toFixed(places);
   }
 
@@ -333,23 +334,25 @@ export class QuoteComponent implements AfterViewInit {
   }
 
   load(): void {
-    for (let i = 0; i < 100; i++) {
-      if (this.eod) {
+    if (this.eod) {
+      for (let i = 0; i < 100; i++) {
         if (this.keys['daily'][this.nextdaily]) {
           this.viewdaily[`${this.keys['daily'][this.nextdaily]}|00:00`] = this.daily[this.keys['daily'][this.nextdaily]];
           this.nextdaily++;
-
-          this.vieweddaily = Object.keys(this.viewdaily);
         }
-      } else {
+      }
+      
+      this.vieweddaily = Object.keys(this.viewdaily);
+    } else {
+      for (let i = 0; i < 100; i++) {
         if (this.keys['intra'][this.nextintra]) {
           const date = new Date(this.keys['intra'][this.nextintra] * 1000);
           this.viewintra[strftime('%Y-%m-%d|%H:%M', this.local(date))] = this.intra[this.keys['intra'][this.nextintra]];
           this.nextintra++;
-
-          this.viewedintra = Object.keys(this.viewintra);
         }
       }
+      
+      this.viewedintra = Object.keys(this.viewintra);
     }
 
     this.more = this.eod ? (this.keys['daily'][this.nextdaily] ? true : false) : (this.keys['intra'][this.nextintra] ? true : false);
