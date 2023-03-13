@@ -1,0 +1,42 @@
+<h1 class="nosel" *ngIf="!info || !tiingo">
+    <img
+      src="https://content.kpnc.io/img/kpnc/symbol/KPNC-L.webp"
+      alt="LIVE"
+    />
+</h1>
+  
+<main class="nosel">
+    <div class="container" *ngIf="!info || !tiingo">
+        <h2 class="nosel">Realtime:</h2>
+        <h3 class="nosel">⤷ <a href="https://api.tiingo.com/products/iex-api">See more</a>...</h3>
+        <div class="box">
+            <p class="message" *ngFor="let message of messages" [ngClass]="{'fail': !message[1], 'succ': message[1]}">{{message[0]}}</p>
+
+            <div style="margin: 18px;" *ngIf="loading">
+              <app-loader></app-loader>
+            </div>
+
+            <form class="input nosel" *ngIf="!info">
+                <input ngModel name="index" #index="ngModel" (change)="changedIndex(index)" type="text" id="index" placeholder="Index...">
+            </form> <br>
+
+            <form class="input nosel" *ngIf="!info">
+                <input ngModel name="symbol" #symbol="ngModel" (change)="changedSymbol(symbol)" type="text" id="symbol" placeholder="Symbol...">
+            </form> <br>
+
+            <form class="input nosel" *ngIf="!tiingo">
+                <input ngModel name="tiingo" #tiingo="ngModel" (change)="changedTiingo(tiingo)" type="text" id="tiingo" placeholder="Tiingo API Key...">
+            </form> <br>
+
+            <button (click)="clicked()">Submit</button>
+
+            <p class="disclaimer nosel">
+                <strong>This is an experimental feature:</strong> The index value should be an index/market that encompasses the symbol value you request (ie. FOREX/EUR or NDX/AAPL or DJIA/CAT or CRYPTO/BTC). The Tiingo value corrisponds to your Tiingo API Key avaliable free at <a href="https://api.tiingo.com/">Tiingo API</a>. Your Tiingo API key is not shared with any remote service, first party or otherwise, and is only stored within your local browser for future use. KPNC Trader is not liable for any adverse quota use. See your API data use/quota in your <a href="https://api.tiingo.com/account/api/usage">Tiingo Dashboard</a>.
+            </p>
+        </div>
+    </div>
+
+    <div *ngIf="info && tiingo">
+        <h1>*GRAPH*</h1>
+    </div>
+</main>

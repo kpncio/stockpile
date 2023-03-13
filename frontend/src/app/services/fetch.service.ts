@@ -19,14 +19,14 @@ export class FetchService {
     return this.http.get(`https://app.kpnc.io/trader/retrieve/${name}/${key}`, options);
   }
 
-  // public request(url: string): Observable<any> {
-  //   const options = {
-  //     headers: new HttpHeaders({
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     })
-  //   };
+  public requestee(url: string): Observable<any> {
+    const options = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      })
+    };
 
-  //   return this.http.get(url, options);
-  // }
+    return this.http.get(url, options);
+  }
 }

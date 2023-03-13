@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
@@ -17,6 +18,7 @@ import { UnknownComponent } from './components/unknown/unknown.component';
 import { IndexComponent } from './components/index/index.component';
 import { QuoteComponent } from './components/quote/quote.component';
 import { SymbolComponent } from './components/index/symbol/symbol.component';
+import { LiveComponent } from './components/live/live.component';
 
 
 @NgModule({
@@ -30,9 +32,11 @@ import { SymbolComponent } from './components/index/symbol/symbol.component';
     UnknownComponent,
     IndexComponent,
     QuoteComponent,
-    SymbolComponent
+    SymbolComponent,
+    LiveComponent
   ],
   imports: [
+    FormsModule,
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
