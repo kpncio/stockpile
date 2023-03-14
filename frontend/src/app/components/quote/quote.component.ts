@@ -1,4 +1,4 @@
-import { ChartOptions, CrosshairMode, DeepPartial, IChartApi, ISeriesApi, createChart } from 'lightweight-charts';
+import { ChartOptions, ColorType, CrosshairMode, DeepPartial, IChartApi, ISeriesApi, createChart } from 'lightweight-charts';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FetchService } from 'src/app/services/fetch.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -80,15 +80,31 @@ export class QuoteComponent implements AfterViewInit {
         borderVisible: false,
       },
       layout: {
-        backgroundColor: 'rgb(30, 30, 30)',
         textColor: 'rgb(255, 255, 255)',
+        background: {
+          type: ColorType.Solid,
+          color: 'rgb(30, 30, 30)',
+        }
       },
       grid: {
-        horzLines: { color: 'rgb(30, 30, 30)', visible: false },
-        vertLines: { color: 'rgb(30, 30, 30)' },
+        horzLines: {
+          color: 'rgb(30, 30, 30)',
+          visible: false
+        },
+        vertLines: {
+          color: 'rgb(30, 30, 30)'
+        }
       }, crosshair: {
-        horzLine: { visible: false, labelVisible: false },
-        vertLine: { style: 0, width: 2, color: 'rgb(35, 118, 235)', labelVisible: false }
+        horzLine: { 
+          visible: false,
+          labelVisible: false 
+        },
+        vertLine: {
+          style: 0,
+          width: 2,
+          color: 'rgb(35, 118, 235)',
+          labelVisible: false
+        }
       }
     }
 
@@ -222,26 +238,31 @@ export class QuoteComponent implements AfterViewInit {
       setLastBarText();
 
       this.chart.subscribeCrosshairMove((param: any) => {
+        let priceFrm = '';
+        if (param.time) {
+          const data = param.seriesData.get(this.series);
+          const price = data.value !== undefined ? data.value : data.close;
+          priceFrm = price.toFixed(2);
+        }
+
         if (this.type == 'line') {
           if (this.eod) {
-            const dateStr =  param.time.year + '.' + param.time.month + '.' + param.time.day;
-            var price = param.seriesPrices.get(this.series);
-            this.tooltip.nativeElement.innerHTML =	`<h4>${this.metadata['exchange'] + ':' + this.symbol}<br>${(Math.round(price * 100) / 100).toFixed(2)}</h4><small>${dateStr}</small>`;
+            this.tooltip.nativeElement.innerHTML =	`<h4>${this.metadata['exchange'] + ':' + this.symbol}<br>${priceFrm}</h4><small>${param.time.replace(/-/g,'.')}</small>`;
           } else {
             const date = new Date(param.time * 1000);
             const dateStr = strftime('%Y.%m.%d', local(date));
             const timeStr = strftime('%l:%M %p', local(date));
-            var price = param.seriesPrices.get(this.series);
-            this.tooltip.nativeElement.innerHTML =	`<h4>${this.metadata['exchange'] + ':' + this.symbol}<br>${(Math.round(price * 100) / 100).toFixed(2)}</h4><small>${dateStr}<br>${timeStr}</small>`;
+
+            this.tooltip.nativeElement.innerHTML =	`<h4>${this.metadata['exchange'] + ':' + this.symbol}<br>${priceFrm}</h4><small>${dateStr}<br>${timeStr}</small>`;
           }
         } else {
           if (this.eod) {
-            const dateStr =  param.time.year + '.' + param.time.month + '.' + param.time.day;
-            this.tooltip.nativeElement.innerHTML =	`<h4>${this.metadata['exchange'] + ':' + this.symbol}</h4><small>${dateStr}</small>`;
+            this.tooltip.nativeElement.innerHTML =	`<h4>${this.metadata['exchange'] + ':' + this.symbol}</h4><small>${param.time.replace(/-/g,'.')}</small>`;
           } else {
             const date = new Date(param.time * 1000);
             const dateStr = strftime('%Y.%m.%d', local(date));
             const timeStr = strftime('%l:%M %p', local(date));
+
             this.tooltip.nativeElement.innerHTML =	`<h4>${this.metadata['exchange'] + ':' + this.symbol}</h4><small>${dateStr}<br>${timeStr}</small>`;
           }
         }
@@ -327,13 +348,8 @@ export class QuoteComponent implements AfterViewInit {
   load(): void {
     this.loading = true;
 
-    
-
-
-
-
     if (typeof Worker !== 'undefined') {
-      const worker = new Worker(new URL('./quote.worker', import.meta.url));
+      const worker = new Worker(new URL('./quote.worker', import.meta.url), {type: 'module'});
 
       worker.onmessage = ({ data }) => {
         this.vieweddaily = data.vieweddaily;
@@ -388,35 +404,5 @@ export class QuoteComponent implements AfterViewInit {
       this.more = this.eod ? (this.keys['daily'][this.nextdaily] ? true : false) : (this.keys['intra'][this.nextintra] ? true : false);
       this.loading = false;
     }
-
-
-
-
-
-
-
-    // if (this.eod) {
-    //   for (let i = 0; i < 100; i++) {
-    //     if (this.keys['daily'][this.nextdaily]) {
-    //       this.viewdaily[`${this.keys['daily'][this.nextdaily]}|00:00`] = this.daily[this.keys['daily'][this.nextdaily]];
-    //       this.nextdaily++;
-    //     }
-    //   }
-      
-    //   this.vieweddaily = Object.keys(this.viewdaily);
-    // } else {
-    //   for (let i = 0; i < 100; i++) {
-    //     if (this.keys['intra'][this.nextintra]) {
-    //       const date = new Date(this.keys['intra'][this.nextintra] * 1000);
-    //       this.viewintra[strftime('%Y-%m-%d|%H:%M', local(date))] = this.intra[this.keys['intra'][this.nextintra]];
-    //       this.nextintra++;
-    //     }
-    //   }
-      
-    //   this.viewedintra = Object.keys(this.viewintra);
-    // }
-
-    // this.more = this.eod ? (this.keys['daily'][this.nextdaily] ? true : false) : (this.keys['intra'][this.nextintra] ? true : false);
-    // this.loading = false;
   }
 }

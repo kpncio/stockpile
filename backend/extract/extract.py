@@ -637,14 +637,16 @@ def get_iex_prices():
 
     log('[NASDAQ/NYSE/BATS (IEX): Started]')
 
-    url = [f"https://cloud.iexapis.com/stable/stock/market/batch?token={os.getenv('iex_api')}&symbols=", '&types=quote']
+    url = f"https://cloud.iexapis.com/stable/stock/market/batch?token={os.getenv('iex_api')}&types=quote&symbols="
     array = kv_get('index', 'RETRIEVE')['STOCK']
     chunks = list(calc_chunks(array, 80))
 
     packet = []
 
     for chunk in chunks:
-        data = requests.get(f"{url[0]}{','.join(chunk).replace('-', '.')}{url[1]}", headers = iex).json()
+        print(f"{url}{','.join(chunk).replace('-', '.')}")
+
+        data = requests.get(f"{url}{','.join(chunk).replace('-', '.')}", headers = iex).json()
 
         for symbol in data:
             pack = {}
@@ -882,7 +884,7 @@ try:
             get_yahoo_daily_prices()
             get_investing_prices()
             get_tiingo_daily()
-            get_iex_prices()
+            # get_iex_prices()
 
         if int(time.strftime('%H%M')) > 925 and int(time.strftime('%H%M')) < 1605: # Between About 9:30am and 4:00pm
             get_index_prices()
@@ -891,8 +893,6 @@ try:
 
     if os.getenv('prime') == 'true': # If prime (.env) is true
         get_metadata_fill()
-
-    get_iex_prices()
 
 except Exception as error:
     log('[ERROR!]: ' + traceback.format_exc())

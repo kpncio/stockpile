@@ -56,12 +56,16 @@ export class IndexComponent implements OnInit {
         if (element.toLowerCase().includes(search.toLowerCase())) {
           return true;
         }
+        
+        return false;
       });
 
       const b = Object.keys(this.search_b).filter((element) => {
         if (element.toLowerCase().includes(search.toLowerCase())) {
           return true;
         }
+        
+        return false;
       });
 
       let c: string[] = [];

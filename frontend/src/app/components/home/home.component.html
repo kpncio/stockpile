@@ -1,78 +1,79 @@
 <h1 class="nosel">
-  <img
-    src="https://content.kpnc.io/img/kpnc/symbol/KPNC-T.webp"
-    alt="KPNC"
-  />
-</h1>
-
-<main class="nosel">
-  <div class="container">
-    <h2>Browse indices:</h2>
-    <h3>⤷ 8 indices loaded...</h3>
-    <div class="row">
-      <div class="column">
-        <div class="cell" (click)="routerLink(['/index/SPX'])">
-          <h2>S&P 500</h2>
-          <small [ngClass]="{'up': root['SPX']['change'] > 0, 'down': root['SPX']['change'] < 0}">
-            {{root['SPX']['price']}}<br>{{root['SPX']['percent']}}
-          </small>
+    <img
+      src="https://content.kpnc.io/img/kpnc/symbol/KPNC-T.webp"
+      alt="KPNC"
+    />
+  </h1>
+  
+  <main class="nosel">
+    <div class="container">
+      <h2>Browse indices:</h2>
+      <h3>⤷ 8 indices loaded...</h3>
+      <div class="row">
+        <div class="column">
+          <div class="cell" (click)="routerLink(['/index/SPX'])">
+            <h2>S&P 500</h2>
+            <small [ngClass]="{'up': root['SPX']['change'] > 0, 'down': root['SPX']['change'] < 0}">
+              {{root['SPX']['price']}}<br>{{root['SPX']['percent']}}
+            </small>
+          </div>
+  
+          <div class="cell" (click)="routerLink(['/index/NDX'])">
+            <h2>Nasdaq 100</h2>
+            <small [ngClass]="{'up': root['NDX']['change'] > 0, 'down': root['NDX']['change'] < 0}">
+              {{root['NDX']['price']}}<br>{{root['NDX']['percent']}}
+            </small>
+          </div>
         </div>
-
-        <div class="cell" (click)="routerLink(['/index/NDX'])">
-          <h2>Nasdaq 100</h2>
-          <small [ngClass]="{'up': root['NDX']['change'] > 0, 'down': root['NDX']['change'] < 0}">
-            {{root['NDX']['price']}}<br>{{root['NDX']['percent']}}
-          </small>
+  
+        <div class="column">
+          <div class="cell" (click)="routerLink(['/index/DJIA'])">
+            <h2>Dow Jones</h2>
+            <small [ngClass]="{'up': root['DJIA']['change'] > 0, 'down': root['DJIA']['change'] < 0}">
+              {{root['DJIA']['price']}}<br>{{root['DJIA']['percent']}}
+            </small>
+          </div>
+  
+          <div class="cell" (click)="routerLink(['/index/FOREX'])">
+            <h2>Forex</h2>
+            <small [ngClass]="{'up': root['FOREX']['change'] > 0, 'down': root['FOREX']['change'] < 0}">
+              {{root['FOREX']['price']}}<br>{{root['FOREX']['percent']}}
+            </small>
+          </div>
         </div>
-      </div>
-
-      <div class="column">
-        <div class="cell" (click)="routerLink(['/index/DJIA'])">
-          <h2>Dow Jones</h2>
-          <small [ngClass]="{'up': root['DJIA']['change'] > 0, 'down': root['DJIA']['change'] < 0}">
-            {{root['DJIA']['price']}}<br>{{root['DJIA']['percent']}}
-          </small>
+  
+        <div class="column">
+          <div class="cell" (click)="routerLink(['/index/CRYPTO'])">
+            <h2>Crypto</h2>
+            <small [ngClass]="{'up': root['CRYPTO']['change'] > 0, 'down': root['CRYPTO']['change'] < 0}">
+              {{root['CRYPTO']['price']}}<br>{{root['CRYPTO']['percent']}}
+            </small>
+          </div>
+  
+          <div class="cell" (click)="routerLink(['/index/METALS'])">
+            <h2>Metals</h2>
+            <small [ngClass]="{'up': root['METALS']['change'] > 0, 'down': root['METALS']['change'] < 0}">
+              {{root['METALS']['price']}}<br>{{root['METALS']['percent']}}
+            </small>
+          </div>
         </div>
-
-        <div class="cell" (click)="routerLink(['/index/FOREX'])">
-          <h2>Forex</h2>
-          <small [ngClass]="{'up': root['FOREX']['change'] > 0, 'down': root['FOREX']['change'] < 0}">
-            {{root['FOREX']['price']}}<br>{{root['FOREX']['percent']}}
-          </small>
-        </div>
-      </div>
-
-      <div class="column">
-        <div class="cell" (click)="routerLink(['/index/CRYPTO'])">
-          <h2>Crypto</h2>
-          <small [ngClass]="{'up': root['CRYPTO']['change'] > 0, 'down': root['CRYPTO']['change'] < 0}">
-            {{root['CRYPTO']['price']}}<br>{{root['CRYPTO']['percent']}}
-          </small>
-        </div>
-
-        <div class="cell" (click)="routerLink(['/index/METALS'])">
-          <h2>Metals</h2>
-          <small [ngClass]="{'up': root['METALS']['change'] > 0, 'down': root['METALS']['change'] < 0}">
-            {{root['METALS']['price']}}<br>{{root['METALS']['percent']}}
-          </small>
-        </div>
-      </div>
-
-      <div class="column">
-        <div class="cell" (click)="routerLink(['/index/ENERGY'])">
-          <h2>Energy</h2>
-          <small [ngClass]="{'up': root['ENERGY']['change'] > 0, 'down': root['ENERGY']['change'] < 0}">
-            {{root['ENERGY']['price']}}<br>{{root['ENERGY']['percent']}}
-          </small>
-        </div>
-
-        <div class="cell" (click)="routerLink(['/index/PORTFOLIO'])">
-          <h2>Portfolio</h2>
-          <small [ngClass]="{'up': root['PORTFOLIO']['change'] > 0, 'down': root['PORTFOLIO']['change'] < 0}">
-            {{root['PORTFOLIO']['price']}}<br>{{root['PORTFOLIO']['percent']}}
-          </small>
+  
+        <div class="column">
+          <div class="cell" (click)="routerLink(['/index/ENERGY'])">
+            <h2>Energy</h2>
+            <small [ngClass]="{'up': root['ENERGY']['change'] > 0, 'down': root['ENERGY']['change'] < 0}">
+              {{root['ENERGY']['price']}}<br>{{root['ENERGY']['percent']}}
+            </small>
+          </div>
+  
+          <div class="cell" (click)="routerLink(['/index/PORTFOLIO'])">
+            <h2>Portfolio</h2>
+            <small [ngClass]="{'up': root['PORTFOLIO']['change'] > 0, 'down': root['PORTFOLIO']['change'] < 0}">
+              {{root['PORTFOLIO']['price']}}<br>{{root['PORTFOLIO']['percent']}}
+            </small>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
+  

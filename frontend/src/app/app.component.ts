@@ -1,12 +1,10 @@
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { slider } from './animations'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  animations: [slider]
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   title = 'KPNC Trader';
