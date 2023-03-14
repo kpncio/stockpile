@@ -5,7 +5,7 @@ import { local, strftime } from "src/app/datetime";
 addEventListener('message', ({ data }) => {
   let end = false;
 
-  while (data.all && !end) {
+  while (!end) {
     if (data.eod) {
       for (let i = 0; i < 100; i++) {
         if (data.keys['daily'][data.nextdaily]) {
@@ -29,6 +29,10 @@ addEventListener('message', ({ data }) => {
       }
       
       data.viewedintra = Object.keys(data.viewintra);
+    }
+
+    if (!data.all) {
+      end = true;
     }
   }
 
