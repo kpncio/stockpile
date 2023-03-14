@@ -3,28 +3,33 @@
 import { local, strftime } from "src/app/datetime";
 
 addEventListener('message', ({ data }) => {
-  const response = `worker response to ${data}`;
-  postMessage(response);
+  let end = false;
 
-  if (data.eod) {
-    for (let i = 0; i < 100; i++) {
-      if (data.keys['daily'][data.nextdaily]) {
-        data.viewdaily[`${data.keys['daily'][data.nextdaily]}|00:00`] = data.daily[data.keys['daily'][data.nextdaily]];
-        data.nextdaily++;
+  while (data.all && !end) {
+    if (data.eod) {
+      for (let i = 0; i < 100; i++) {
+        if (data.keys['daily'][data.nextdaily]) {
+          data.viewdaily[`${data.keys['daily'][data.nextdaily]}|00:00`] = data.daily[data.keys['daily'][data.nextdaily]];
+          data.nextdaily++;
+        } else {
+          end = true;
+        }
       }
-    }
-    
-    data.vieweddaily = Object.keys(data.viewdaily);
-  } else {
-    for (let i = 0; i < 100; i++) {
-      if (data.keys['intra'][data.nextintra]) {
-        const date = new Date(data.keys['intra'][data.nextintra] * 1000);
-        data.viewintra[strftime('%Y-%m-%d|%H:%M', local(date))] = data.intra[data.keys['intra'][data.nextintra]];
-        data.nextintra++;
+      
+      data.vieweddaily = Object.keys(data.viewdaily);
+    } else {
+      for (let i = 0; i < 100; i++) {
+        if (data.keys['intra'][data.nextintra]) {
+          const date = new Date(data.keys['intra'][data.nextintra] * 1000);
+          data.viewintra[strftime('%Y-%m-%d|%H:%M', local(date))] = data.intra[data.keys['intra'][data.nextintra]];
+          data.nextintra++;
+        } else {
+          end = true;
+        }
       }
+      
+      data.viewedintra = Object.keys(data.viewintra);
     }
-    
-    data.viewedintra = Object.keys(data.viewintra);
   }
 
   postMessage({

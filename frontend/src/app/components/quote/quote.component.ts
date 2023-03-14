@@ -343,9 +343,7 @@ export class QuoteComponent implements AfterViewInit {
     return (Math.round(value * 10 ** places) / 10 ** places).toFixed(places);
   }
 
-  
-
-  load(): void {
+  load(all: boolean = false): void {
     this.loading = true;
 
     if (typeof Worker !== 'undefined') {
@@ -377,7 +375,8 @@ export class QuoteComponent implements AfterViewInit {
         daily: this.daily,
         intra: this.intra,
         eod: this.eod,
-        keys: this.keys
+        keys: this.keys,
+        all: all
       });
     } else {
       if (this.eod) {
