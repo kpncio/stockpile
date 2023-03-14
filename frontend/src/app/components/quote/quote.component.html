@@ -137,9 +137,10 @@
             </tr>
           </tbody>
         </table>
-        <div *ngIf="more" class="more">
+        <div *ngIf="more && !loading" class="more">
           <button (click)="load()">Load More</button>
         </div>
+        <app-loader *ngIf="more && loading" ></app-loader>
       </div>
     </div>
 

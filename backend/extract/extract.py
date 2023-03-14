@@ -151,10 +151,11 @@ def parse_index():
         columns = row.find_all('td')
         
         if(columns != []):
-            index = columns[0].text.strip().replace('S&P 500', 'spx').replace('Nasdaq 100', 'ndx').replace('Dow Jones', 'djia')
-            value = columns[1].text.strip().replace('\xa0\xa0', '').replace(',', '').replace('*', '')
-            change = columns[2].text.strip()
-            percent = columns[3].text.strip('(%)')
+            index = columns[0].text.strip().replace('SPY', 'spx').replace('QQQ', 'ndx').replace('DIA', 'djia')
+            etf = columns[1].text.strip()
+            value = columns[2].text.strip().replace('\xa0\xa0', '').replace(',', '').replace('*', '')
+            change = columns[3].text.strip()
+            percent = columns[4].text.strip('(%)')
 
             rows.append([index, value, change, percent])
 
@@ -172,7 +173,6 @@ def get_index_contituents():
     True
     [1, 2, 3, 4]
     {'one': 1, 'two': 2}
-
 
     indices = {
         'SPX': parse_indices('https://www.slickcharts.com/sp500'),
