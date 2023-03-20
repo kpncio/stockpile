@@ -1,10 +1,12 @@
 Dependecies:
     pip install bs4 python-dotenv cloudscraper yfinance requests
 
+
 Services:
     Tiingo API
     IEX Cloud API
     Cloudflare Workers/KV
+
 
 Environment:
     tiingo_api:         Tiingo API Key              https://api.tiingo.com/documentation/general/connecting
@@ -19,6 +21,29 @@ Environment:
     cf_account:         Cloudflare Account ID       https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/
     cf_api_key:         Cloudflare API Key          https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
     prime:              Priming mode will backfill all required metadata (makes a lot of requests)...
+
+
+Environment Example:
+	# Tiingo API key for stock, forex, crypto...
+	tiingo_api=####################
+
+	# IEX Cloud (PK) key for extra stock info...
+	iex_api=#######################
+
+	# Credentials for Cloudflare account and worker resources
+	cf_kv_meta=####################
+	cf_kv_index=###################
+	cf_kv_intra=###################
+	cf_kv_daily=###################
+	cf_kv_preview=#################
+	cf_kv_extra=###################
+	cf_email=############@#####.###
+	cf_account=####################
+	cf_api_key=####################
+
+	# Priming mode. Backfill metadata about companies...
+	prime=false
+
 
 Automatically Run Every 30min:
     Linux:
