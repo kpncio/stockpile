@@ -1,4 +1,5 @@
 import requests
+import yfinance
 import json
 
 import m_cloudflare
@@ -125,15 +126,61 @@ def get_index_prices():
     usdx_change = round(usdx_price - m_utilities.calc_dixie(usdx['eurusd'][-2], usdx['usdjpy'][-2], usdx['gbpusd'][-2], usdx['usdcad'][-2], usdx['usdsek'][-2], usdx['usdchf'][-2]), 2)
     usdx_percent = round(usdx_change / usdx_price * 100, 2)
 
-    metals = requests.get('https://query1.finance.yahoo.com/v7/finance/quote?symbols=GC=F', headers = m_headers.yahoo).json()
-    gold_price = round(metals['quoteResponse']['result'][0]['regularMarketPrice'], 2)
-    gold_change = round(metals['quoteResponse']['result'][0]['regularMarketChange'], 2)
-    gold_percent = round(metals['quoteResponse']['result'][0]['regularMarketChangePercent'], 2)
+    last = {
+        'raw': 0,
+        'close': 0,
+        'change': 0,
+        'percent': 0
+    }
+    
+    data = yfinance.Ticker('GC=F').history(period = '5d', interval = '1d')
+    data.iloc[::-1]
 
-    brent = requests.get('https://query1.finance.yahoo.com/v7/finance/quote?symbols=BZ=F', headers = m_headers.yahoo).json()
-    oil_price = round(brent['quoteResponse']['result'][0]['regularMarketPrice'], 3)
-    oil_change = round(brent['quoteResponse']['result'][0]['regularMarketChange'], 3)
-    oil_percent = round(brent['quoteResponse']['result'][0]['regularMarketChangePercent'], 3)
+    for index, rows in data.iterrows():
+        change = 0
+        percent = 0
+        if last['raw'] != 0:
+            change = rows.Close - last['raw']
+            percent = change / last['raw'] * 100
+        
+        last = {
+            'raw': rows.Close,
+            'close': round(rows.Close, 2),
+            'change': round(change, 2),
+            'percent': round(percent, 2)
+        }
+
+    gold_price = last['close']
+    gold_change = last['change']
+    gold_percent = last['percent']
+    
+    last = {
+        'raw': 0,
+        'close': 0,
+        'change': 0,
+        'percent': 0
+    }
+
+    data = yfinance.Ticker('BZ=F').history(period = '5d', interval = '1d')
+    data.iloc[::-1]
+
+    for index, rows in data.iterrows():
+        change = 0
+        percent = 0
+        if last['raw'] != 0:
+            change = rows.Close - last['raw']
+            percent = change / last['raw'] * 100
+        
+        last = {
+            'raw': rows.Close,
+            'close': round(rows.Close, 3),
+            'change': round(change, 3),
+            'percent': round(percent, 3)
+        }
+
+    oil_price = last['close']
+    oil_change = last['change']
+    oil_percent = last['percent']
 
     stock = requests.get('https://api.tiingo.com/iex/?tickers=nvda,csx,eaf', headers = m_headers.tiingo).json()
     why = {}

@@ -19,6 +19,7 @@ m_utilities.log('[Current Date]: ' + m_utilities.daysago(0))
 try:
     if int(time.strftime('%w')) != 0 and int(time.strftime('%w')) != 6: # Business Days
         if int(time.strftime('%H%M')) > 855 and int(time.strftime('%H%M')) < 905: # About 9:00am
+        
             t_index.get_index_contituents()
             t_yahoo.get_yahoo_daily_prices()
             t_invest.get_investing_prices()
