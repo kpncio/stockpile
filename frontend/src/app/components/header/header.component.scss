@@ -22,3 +22,24 @@ header {
   }
 }
 
+#message {
+  display: block;
+  background-color: $red;
+
+  p {
+    margin: 0;
+    padding: 10px;
+    color: $white;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  a {
+    color: $white;
+    transition: 250ms;
+
+    &:hover {
+      color: $blue;
+    }
+  }
+}

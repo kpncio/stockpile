@@ -1,5 +1,5 @@
 # Expects: Cron "*/30 * * * *":
-# https://app.kpnc.io/trader/extract/
+# https://app.kpnc.io/stockpile/extract/
 
 import traceback
 import time

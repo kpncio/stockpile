@@ -16,7 +16,7 @@ export class FetchService {
       })
     };
 
-    return this.http.get(`https://app.kpnc.io/trader/retrieve/${name}/${key}`, options);
+    return this.http.get(`https://app.kpnc.io/stockpile/retrieve/${name}/${key}`, options);
   }
 
   public requestee(url: string): Observable<any> {

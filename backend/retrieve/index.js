@@ -1,5 +1,5 @@
-// Expects: https://app.kpnc.io/trader/retrieve/<store>/<key>/:
-// https://app.kpnc.io/trader/retrieve/
+// Expects: https://app.kpnc.io/stockpile/retrieve/<store>/<key>/:
+// https://app.kpnc.io/stockpile/retrieve/
 
 addEventListener('fetch', event => {
 	event.respondWith(handleRequest(event));
@@ -27,7 +27,7 @@ async function handleRequest(event) {
   };
 
   try {
-    let path = new URL(request.url).pathname.substring(1).toUpperCase().replace('TRADER/RETRIEVE/', '').replace('FAVICON.ICO', '').split('/');
+    let path = new URL(request.url).pathname.substring(1).toUpperCase().replace('STOCKPILE/RETRIEVE/', '').replace('FAVICON.ICO', '').split('/');
     
     switch (path[0]) {
       case '':
