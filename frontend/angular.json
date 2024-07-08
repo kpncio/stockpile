@@ -39,7 +39,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/trader",
+            "outputPath": "dist/stockpile",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -88,10 +88,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "trader:build:production"
+              "browserTarget": "stockpile:build:production"
             },
             "development": {
-              "browserTarget": "trader:build:development"
+              "browserTarget": "stockpile:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -99,7 +99,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "trader:build"
+            "browserTarget": "stockpile:build"
           }
         },
         "test": {
